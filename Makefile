@@ -2,7 +2,7 @@ NAME=a.out
 
 SRCS=main.cpp
 OBJS=$(SRCS:.cpp=.o)
-CXX=clang++
+CXX=clang++ -g
 CXXFLAGS=
 HEADER=vector.hpp
 
@@ -13,3 +13,6 @@ $(NAME):$(OBJS)
 
 %.o:%.cpp $(HEADER)
 	$(CXX) $(CXXFLAGS) $(SRC) -c $<
+
+clean:
+	rm -f ${OBJS}
