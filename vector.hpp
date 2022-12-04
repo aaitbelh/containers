@@ -79,6 +79,14 @@ namespace ft
                 for(size_t i = 0; i < n; ++i)
                     this->v_ptr.it_ptr[i] = 0; 
             }
+            vector(vector &obj)
+            {
+                this->__size_ = obj.size();
+                this->__capacity_ = obj.capacity();
+                this->v_ptr = __allocate(this->__capacity_);
+                for(int i = 0; i < __size_; ++i)
+                    this->v_ptr.it_ptr[i] = obj[i];
+            }
             iterator& begin() { return (this->v_ptr); }
             iterator end() { 
 
@@ -92,8 +100,11 @@ namespace ft
             {
                 if(!this->v_ptr.it_ptr) { 
                     this->v_ptr.it_ptr = __allocate(1); 
-                    this->v_ptr.it_ptr[__size_] = val; 
-                    return ; }
+                    this->v_ptr.it_ptr[__size_] = val;
+                    __size_++;
+                    __capacity_= 1;
+                    return ; 
+                    }
                 if(size() < capacity()){}
                 else
                 {
@@ -107,9 +118,13 @@ namespace ft
                     this->__capacity_ *= 2;
                     this->v_ptr.it_ptr = tmp;
                 }
-                this->v_ptr.it_ptr[size()] = val;
+                this->v_ptr.it_ptr[__size_] = val;
                 this->__size_++;
                 
+            }
+            void pop_back()
+            {
+                this->__size_--;
             }
             value_type operator[](std::ptrdiff_t index)
             {
@@ -117,8 +132,20 @@ namespace ft
             }
             vector& operator=(const vector&obj)
             {
+                this->__size_ = obj.size();
+                if(__capacity_ < obj.capacity)
+                {
+                    __alloc.deallocate(this->v_ptr.it_ptr, this->__capacity_);
+                    this->v_ptr.it_ptr = allocate(obj.__capacity_);
+                    this->__capacity_ = obj.capacity();
+                }
                 for(int i = 0; i < obj.size(); ++i)
                     this->v_ptr.it_ptr[i] = obj.v_ptr.it_ptr[i];
+            }
+            ~vector()
+            {
+                if(this->v_ptr.it_ptr)
+                    __alloc.deallocate(this->v_ptr.it_ptr, this->__capacity_);
             }
     };
     

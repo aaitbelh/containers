@@ -6,7 +6,7 @@
 /*   By: casper <casper@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2022/12/04 06:13:12 by casper           ###   ########.fr       */
+/*   Updated: 2022/12/04 08:05:54 by casper           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,10 @@
 
 int main()
 {
-    std::vector<int> a(4, 8);
-    std::vector<int>::iterator it = a.end();
-    --it;
-    *it = 9;
-    std::cout << *it << std::endl;
+    ft::vector<int> v;
+    v.push_back(1);
+    v.push_back(1);
+    std::cout << v[0] << std::endl;
 }
 
 
