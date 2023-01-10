@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: casper <casper@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2022/12/11 10:39:51 by casper           ###   ########.fr       */
+/*   Updated: 2023/01/10 21:03:06 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,22 @@
 #include "vector.hpp"
 #include <algorithm>
 #include <iterator>
-template< class U, typename = std::enable_if<!std::is_integral<U>::value>>
-void f(U val1, U val2)
+#include <cmath>
+
+
+template <class T>
+class X
 {
-    for(; val1 < val2; val1++)
-    {
-        std::cout << *val1 << std::endl;
-    }
-}
+    public:
+    X():a(NULL){}
+    T a;
+};
 
 int main()
 {
-    int tab[10] = {1, 2, 3,4, 5,6,7,8,9,10};
-    std::vector<int> vec;
-    vec.assign(&tab[0], &tab[10]);
-    vec.resize(-1);
-    std::cout << vec.capacity() << std::endl;
-    std::cout << vec.size() << std::endl;
+    ft::vector<std::string> v(1, "DG");
+    v.assign(64, "vector-string");
+    std::cout << v.size() << std::endl;
+    for(size_t i = 0; i < v.size(); ++i)
+        std::cout << v[i] << std::endl;
 }

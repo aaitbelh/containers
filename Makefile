@@ -3,7 +3,7 @@ NAME=a.out
 SRCS=main.cpp
 OBJS=$(SRCS:.cpp=.o)
 CXX=clang++ -g
-CXXFLAGS=
+CXXFLAGS=  -std=c++98 -Wall -Werror -Wextra
 HEADER=vector.hpp
 
 all: $(NAME)
@@ -16,3 +16,6 @@ $(NAME):$(OBJS)
 
 clean:
 	rm -f ${OBJS}
+fclean:
+	rm -f $(NAME)
+re : fclean clean all
