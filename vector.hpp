@@ -229,17 +229,21 @@ namespace ft
 				return this->v_ptr[n];
 			}
             template <class InputIterator>  
-            void assign (InputIterator first, InputIterator last, typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
+            void assign (InputIterator first, InputIterator last  ,typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
             {
-                size_t tmp_size = last - first;
+                size_type tmp_size = std::distance(first, last);
+                for(size_type i = 0; i < __size_ ; ++i)
+                    __alloc.destroy(this->v_ptr + i);
                 if(tmp_size > this->__capacity_)
                 {
-                    __alloc.destroy(this->v_ptr);
-                    this->reserve(tmp_size);
+                    if(this->v_ptr)
+                        __alloc.deallocate(this->v_ptr, this->__capacity_);
+                    this-> v_ptr = __alloc.allocate(tmp_size);
+                    this->__capacity_ = tmp_size;
                 }
-                for(this->__size_ = 0 ;first < last; first++)
+                for(this->__size_ = 0 ;first != last; first++)
                 {
-                    this->v_ptr[this->__size_] = *first;
+                    __alloc.construct(this->v_ptr + __size_, *first);
 					++__size_;
                 }
             }
@@ -249,9 +253,10 @@ namespace ft
 			// }
             void assign(size_t n, const value_type &val)
             {
+                for(size_type i = 0; i < n && i < __capacity_; ++i)
+                    __alloc.destroy(this->v_ptr + i);
                 if(n < this->__capacity_)
                 {
-                    __alloc.destroy(this->v_ptr);
                     for(this->__size_ = 0; this->__size_ < n; ++__size_)
                         __alloc.construct(v_ptr + __size_, val);
                 }
@@ -260,7 +265,6 @@ namespace ft
                     if(this->v_ptr)
                     {
                         __alloc.deallocate(this->v_ptr, this->__capacity_);
-                        __alloc.destroy(this->v_ptr);
                     }
                     this->__capacity_ = n;
                     this->v_ptr = __allocate(n);
@@ -275,46 +279,42 @@ namespace ft
                 {
                     pointer tmp = __allocate(__n);
                     for(size_t i = 0; i < this->__size_; ++i)
-                        tmp[i] = this->v_ptr[i];
+                        __alloc.construct(tmp + i, this->v_ptr[i]);
                     if(this->v_ptr)
-                    {
-                        __alloc.destroy(this->v_ptr);
                         __alloc.deallocate(this->v_ptr, this->__capacity_);
-                    }
                     this->__capacity_ = __n;
                     this->v_ptr = tmp;
                 }
             }
             void resize(size_type n, T val = T())
             {
-                if(this->__capacity_ < n)
+                if(n > __size_)
                 {
-                    size_t tmp_capacity = __capacity_;
-                    if(this->__capacity_ * 2 < n)
-                        __capacity_ = n;
-                    else
-                        __capacity_ *= 2;
-                    pointer tmp = __allocate(this->__capacity_);
-                    for(size_t i = 0; i < __size_ ; ++i)
+                    if(this->__capacity_ < n)
                     {
-                        __alloc.construct(tmp + i, v_ptr[i]);
+                        size_t tmp_capacity = __capacity_;
+                        if(this->__capacity_ * 2 < n)
+                            __capacity_ = n;
+                        else
+                            __capacity_ *= 2;
+                        pointer tmp = __allocate(this->__capacity_);
+                        for(size_t i = 0; i < __size_ ; ++i)
+                            __alloc.construct(tmp + i, v_ptr[i]);
+                        if(this->v_ptr)
+                        {
+                            for(size_t i = 0; i < __size_ ; ++i)
+                                __alloc.destroy(v_ptr + i);
+                            __alloc.deallocate(this->v_ptr, tmp_capacity);
+                        }
+                        v_ptr = tmp;
                     }
                     for(size_t i = __size_; i < n ; ++i)
-                    {
-                        __alloc.construct(tmp + i, val);
-                    }
-                    if(this->v_ptr)
-                    {
-                        __alloc.destroy(this->v_ptr);
-                        __alloc.deallocate(this->v_ptr, tmp_capacity);
-                    }
-                    v_ptr = tmp;
+                        __alloc.construct(v_ptr + i, val);
                 }
                 else
-                {
-                    __alloc.destroy(this->v_ptr + n);
-                }
-                this->__size_ = n;
+                    for(size_t i = n ; i < __size_ ; ++i)
+                        __alloc.destroy(v_ptr + i);
+                this->__size_ = n; 
                 
             }
             size_t size() { return (this->__size_); }
@@ -359,6 +359,7 @@ namespace ft
                 this->__size_ = obj.size();
                 if(__capacity_ < obj.capacity)
                 {
+                    __alloc.destroy(this->v_ptr);
                     __alloc.deallocate(this->v_ptr, this->__capacity_);
                     this->v_ptr = allocate(obj.__capacity_);
                     this->__capacity_ = obj.capacity();
@@ -370,7 +371,8 @@ namespace ft
             {
                 if(this->v_ptr)
                 {
-                    __alloc.destroy(this->v_ptr);
+                    for(size_t i = 0; i < this->__size_ ; ++i)
+                        __alloc.destroy(this->v_ptr + i);
                     __alloc.deallocate(this->v_ptr, this->__capacity_);
                 }
             }
