@@ -200,15 +200,15 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             typedef class __vector_riterators<pointer>                     reverse_iterator;
             typedef class __vector_iterators<const_pointer>                const_iterator;
             typedef class __vector_riterators<const_pointer>               const_reverse_iterator;
-            vector():__capacity_(0),__size_(0), v_ptr(NULL){}  
-            vector(size_t n, value_type val = 0):__capacity_(n),__size_(n), v_ptr(NULL)
+            explicit vector(const allocator_type& alloc = allocator_type()):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL) {}  
+            explicit vector(size_type n, const value_type& val = value_type(),  const Allocator& alloc = Allocator()):__capacity_(n),__size_(n), v_ptr(NULL), __alloc(alloc)
             {
                 this->v_ptr = __allocate(n);
                 for(size_type i = 0; i < n; ++i)
                     __alloc.construct(this->v_ptr + i, val);
             }
 			template<class InputIterator>
-			vector(InputIterator first, InputIterator last, typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
+			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type() ,typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0):__alloc(alloc)
 			{
                 vector tmp_v;
                 for(;first != last; ++first)
@@ -277,7 +277,6 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                 for(;first != last; ++first)
                     tmp_v.push_back(*first);
                 size_type tmp_size = tmp_v.size();
-                // std::cout << "SIZE == " <<  this->__size_ << " && " << tmp_size << std::endl;
                 this->clear();
                 if(tmp_size > this->__capacity_)
                 {
@@ -292,19 +291,57 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
 					++__size_;
                 }
             }
+            template <class InputIterator>    
+            void insert (iterator position, InputIterator first, InputIterator last)
+            {
+                vector GetSize(first, last);
+                vector tmp_v;
+                tmp_v.reserve(this->__size_ + GetSize.size());
+                iterator first_it = begin();
+                for(;first_it <= end(); ++first_it)
+                {
+                    if(first_it == position)
+                    {
+                        for(size_type i = 0; i < GetSize.size(); ++i)
+                            tmp_v.push_back(GetSize[i]);
+                    }
+                    if(first_it != end())
+                        tmp_v.push_back(*first_it);
+                }
+                this->swap(tmp_v);
+            }
+            void insert(iterator position, size_type n, const value_type& val)
+            {
+                vector tmp_v;
+                iterator first = begin();
+                tmp_v.reserve(this->__size_ + n);
+                for(;first <= end(); ++first)
+                {
+                    if(first == position)
+                    {
+                        for(size_type i = 0; i < n; ++i)
+                            tmp_v.push_back(val);
+                    }
+                    if(first != end())
+                        tmp_v.push_back(*first);
+                }
+                this->swap(tmp_v);
+            }
             iterator insert( const_iterator pos, const T& value )
             {
                 vector tmp_v;
                 iterator first = begin();
                 iterator tmp;
+                tmp_v.reserve(this->__size_ + 1);
                 for(;first <= end();++first)
                 {
                     if(first == pos)
                     {
-                        tmp = first;
                         tmp_v.push_back(value);
+                        tmp = tmp_v.end() - 1;
+    
                     }
-                    if(first < end())
+                    if(first != end())
                         tmp_v.push_back(*first);
                 }
                 this->swap(tmp_v);

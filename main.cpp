@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/01/15 13:56:45 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/01/15 22:39:22 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,14 +75,5 @@ int main()
         "gzaapTWW7i9EZjjzLeK6"                                                                     \
     };                  
 
-    std::vector<std::string> v;
-    std::vector<std::string>::iterator it = v.insert(v.end(), "LOLL");
-    std::cout << *it << std::endl;
-    std::vector<std::string>::iterator it2 = v.insert(v.end(), "PPP");
-    std::cout << *it2 << std::endl;
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
-    for(size_t i = 0 ; i < v.size(); ++i)
-        std::cout << v[i] << " # ";
-    std::cout << std::endl;
+    ft::vector<std::string> v(std::allocator<std::string>);
 }
