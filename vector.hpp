@@ -201,7 +201,7 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             typedef class __vector_iterators<const_pointer>                const_iterator;
             typedef class __vector_riterators<const_pointer>               const_reverse_iterator;
             explicit vector(const allocator_type& alloc = allocator_type()):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL) {}  
-            explicit vector(size_type n, const value_type& val = value_type(),  const Allocator& alloc = Allocator()):__capacity_(n),__size_(n), v_ptr(NULL), __alloc(alloc)
+            explicit vector(size_type n, const value_type& val = value_type(),  const Allocator& alloc = Allocator()):__capacity_(n),__size_(n), __alloc(alloc), v_ptr(NULL)
             {
                 this->v_ptr = __allocate(n);
                 for(size_type i = 0; i < n; ++i)
