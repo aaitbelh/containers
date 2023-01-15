@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/01/11 14:16:05 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/01/15 13:56:45 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <cmath>
 
 
+
 template <class T>
 class X
 {
@@ -34,14 +35,14 @@ class X
 int main()
 {
 
-    size_t s_size = 32;
+    // size_t s_size = 32;
     // size_t b_size = 64;
      std::string s_string[32] = {                                                                   \
-        "QExoqp0nICr0sXsHqty2", "naax9QcpJhvaL7DezsNQ", "25ZTtB6wbptfbxM8AvHB",                    \
-        "tShYNtc0MkdjqLrOatgz", "7Z3kf1Qec0NnsLSEpbOt", "WhkSNrKJC966fvjZ2Or1",                    \
-        "8vlxlFRRgW7yYj4GO7dt", "5sq1aoT8zP0HaHj3nFOK", "61Dv31GYZhkgjKCErpng",                    \
-        "l0IIcWWHhOcPzoxEamQM", "bE1RYclskwXlhCm46YFs", "kXeoi5qz94JYPqSDTs79",                    \
-        "TFsQP1dz8VVos9KzUpY0", "b3wYQR7An193gjgYuRj3", "xSmyNsnSJ47jLqrvbpyr",                    \
+        "A", "B", "C",                    \
+        "D", "E", "F",                    \
+        "G", "H", "I",                    \
+        "J", "K", "L",                    \
+        "A", "A", "A",                    \
         "guAIP2Wq43Gf8VhHsyu5", "yT6c2loPebHovnq9BQog", "3qvU1xcVm2g1DKFDlqh4",                    \
         "L0q8RR9P41VD4sVjdnWl", "YdjESsIZM4b1oGQPjpBe", "l1ZVQbWKw7brHUSimJgq",                    \
         "xdn0cf4vqRzpfXWtl10G", "lYnZvpqaV0s8DowMZwzV", "8P1cyKrwJNLoJyvLjYqO",                    \
@@ -50,12 +51,12 @@ int main()
         "YvY4aQFHgAuagn4dFLO1", "eGR6Dtv7LW75qlV5Fkik"                                             \
     };                                                                                             \
     std::string b_string[64] = {                                                                   \
-        "uvg6KqtcgduR31n3ajsv", "wbiAcjgojb9JOagZwyMn", "ATZKCzaPOqgkhPjwuGlf",                    \
-        "MOhaJs56yjOw8f6nLPRA", "0gyB2Tr42v6awMw2nK7J", "e6GsiLFUuoDpVFEhJKZ1",                    \
-        "z0jXAhiV9keBsaLOY0Xf", "P68p2ZAosHJdmoZh1C7N", "Pu3EuZVeY0TCO3ojdK0t",                    \
-        "z7jCHMooHCS73M8GygKB", "uT4KoK83JrZxZjkul7ty", "g8gfrZoY5XwfzRusvHvv",                    \
-        "7PGmkM0OSRnYREt9mFIP", "q1od7mBIpPEsCtpF9kdw", "XQo0LWId5TdZnLnpUNOb",                    \
-        "U0m1R0kFFhAFyS6hmHHw", "K0lPKfxJxIOnE8QB90xn", "cZ5xyQifMJhrKxqBK9A7",                    \
+        "B", "B", "B",                    \
+        "B", "B", "B",                    \
+        "B", "B", "B",                    \
+        "B", "B", "B",                    \
+        "B", "B", "B",                    \
+        "B", "B", "B",                    \
         "cFBiwjfYw7Js6qEGy5Kt", "1tW0KWfXxeFO69tByqcE", "3Fvq9NxBrhPXHe0IlIVx",                    \
         "MSRDjdFRvHAhFGhiMtDe", "zGm2joMh71jQkYzg5L4V", "Mq4RRaeLvSAO0z2ibp8Q",                    \
         "WnLFYnQKP8TNJkqVVbUg", "E98UphbbVSzrW5Mzurmg", "F8HRxeEcaTZDkFPkioij",                    \
@@ -73,12 +74,15 @@ int main()
         "DjNFMtt9PxkzqvWBHI6j", "1Z3YkeTFlPniKnzFhzgu", "76XqQg6hqMf5IXxKPOEs",                    \
         "gzaapTWW7i9EZjjzLeK6"                                                                     \
     };                  
-    ft::vector<std::string> v;
-    v.assign(b_string, b_string + 33);
+
+    std::vector<std::string> v;
+    std::vector<std::string>::iterator it = v.insert(v.end(), "LOLL");
+    std::cout << *it << std::endl;
+    std::vector<std::string>::iterator it2 = v.insert(v.end(), "PPP");
+    std::cout << *it2 << std::endl;
     std::cout << v.size() << std::endl;
     std::cout << v.capacity() << std::endl;
-    v.assign(s_string, s_string + s_size);
-    std::cout << v.size() << std::endl;
-    std::cout << v.capacity() << std::endl;
-    // system("leaks a.out");
+    for(size_t i = 0 ; i < v.size(); ++i)
+        std::cout << v[i] << " # ";
+    std::cout << std::endl;
 }
