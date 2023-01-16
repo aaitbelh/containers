@@ -16,14 +16,15 @@
 #include <iostream>
 #include  <stdexcept>
 #include <type_traits>
+#include <algorithm>
+#include "track/track_allocator.hpp"
 namespace ft
 {
-template<class vector>
-void swap(vector &v1, vector& v2)
-{
-    v1.swap(v2);
-}
-
+    template<class vector>
+    void swap(vector &v1, vector& v2)
+    {
+        v1.swap(v2);
+    }
 template<class Inputiterator>
 Inputiterator operator+(const size_t n, Inputiterator &obj) {
     return obj + n;
@@ -523,6 +524,35 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             allocator_type													__alloc;
             pointer															v_ptr;
     };
-    
+    template<class T>
+    bool operator==(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    {
+        return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+    }
+    template<class T>
+    bool operator!=(const ft::vector<T> &lhs, const ft::vector<T> &rhs )
+    {
+        return !(lhs == rhs);
+    }
+    template<class T>
+    bool operator<(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    {
+        return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    }
+    template<class T>
+    bool operator>(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    {
+        return rhs < lhs;
+    }
+    template<class T>
+    bool operator<=(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    {
+        return !(rhs < lhs);
+    }
+    template<class T>
+    bool operator>=(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    {
+        return !(lhs < rhs);
+    }
 };
 #endif

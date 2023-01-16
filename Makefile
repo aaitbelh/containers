@@ -1,6 +1,6 @@
 NAME=a.out
 
-SRCS=main.cpp
+SRCS= main.cpp track/leak_checker.cpp track/memory_tracker.cpp
 OBJS=$(SRCS:.cpp=.o)
 CXX=clang++ -g
 CXXFLAGS=  -std=c++98 -Wall -Werror -Wextra
@@ -11,8 +11,8 @@ all: $(NAME)
 $(NAME):$(OBJS)
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) && ./a.out
 
-%.o:%.cpp $(HEADER)
-	$(CXX) $(CXXFLAGS) $(SRC) -c $<
+# %.o:%.cpp $(HEADER)
+# 	$(CXX) $(CXXFLAGS) $(SRC) -c $<
 
 clean:
 	rm -f ${OBJS}

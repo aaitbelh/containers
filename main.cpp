@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/01/15 22:39:22 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/01/16 15:26:17 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,12 @@ int main()
         "olIewtUEvXJgs1lB9bCn", "dTsPDS0x2uXtcgOIJHb8", "DYvJ2phLppGNZKboTBrd",                    \
         "DjNFMtt9PxkzqvWBHI6j", "1Z3YkeTFlPniKnzFhzgu", "76XqQg6hqMf5IXxKPOEs",                    \
         "gzaapTWW7i9EZjjzLeK6"                                                                     \
-    };                  
-
-    ft::vector<std::string> v(std::allocator<std::string>);
+    };
+    std::vector<std::string, track_allocator<std::string> > v;
+    std::vector<std::string, track_allocator<std::string> > v2(s_string, s_string + 10);
+    if(v2 < v)
+        std::cout << "true";
+    else
+        std::cout << "NOP" << std::endl;
+    
 }
