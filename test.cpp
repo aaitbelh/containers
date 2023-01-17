@@ -2,9 +2,9 @@
 #include <vector>
 int main()
 {
-    std::vector<int> myVector = {1, 2, 3, 4};
-    std::vector<int>::iterator it = myVector.begin();
-    while (it != myVector.end()) {
+    std::vector<int> myvector = {1, 2, 3, 4};
+    std::vector<int>::iterator it = myvector.begin();
+    while (it != myvector.end()) {
         int x = *it;
         std::cout << x << std::endl;
         ++it;

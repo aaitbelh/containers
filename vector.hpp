@@ -17,7 +17,6 @@
 #include  <stdexcept>
 #include <type_traits>
 #include <algorithm>
-#include "track/track_allocator.hpp"
 namespace ft
 {
     template<class vector>
@@ -214,17 +213,26 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                 vector tmp_v;
                 for(;first != last; ++first)
                     tmp_v.push_back(*first);
-                size_type tmp_size = tmp_v.size();
-				this->v_ptr = __allocate(tmp_size);
-                this->__capacity_ = tmp_size;
-                for(this->__size_ = 0 ; __size_ < tmp_size; ++__size_)
+                if(tmp_v.size())
                 {
-                    __alloc.construct(this->v_ptr + __size_, tmp_v[__size_]);
+                    size_type tmp_size = tmp_v.size();
+                    this->v_ptr = __allocate(tmp_size);
+                    this->__capacity_ = tmp_size;
+                    for(this->__size_ = 0 ; __size_ < tmp_size; ++__size_)
+                    {
+                        __alloc.construct(this->v_ptr + __size_, tmp_v[__size_]);
+                    }
                 }
 			}
-            vector(vector &obj)
+            vector(const vector &obj)
             {
-                *this = obj;
+                this->v_ptr = NULL;
+                this->__capacity_ = obj.capacity();
+                this->__size_  = obj.size();
+                if(__capacity_)
+                    this->v_ptr = __alloc.allocate(this->__capacity_);
+                for(size_t i =0; i < __size_; ++i)
+                    __alloc.construct(this->v_ptr + i, obj[i]);
             }
             iterator begin() const {
                 return (iterator(v_ptr));
@@ -296,8 +304,10 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             void insert (iterator position, InputIterator first, InputIterator last)
             {
                 vector GetSize(first, last);
+                std::cout << "GETSIZE = " << GetSize.size() << std::endl;
                 vector tmp_v;
                 tmp_v.reserve(this->__size_ + GetSize.size());
+                std::cerr << this->__size_  << " && " << GetSize.size() << std::endl;
                 iterator first_it = begin();
                 for(;first_it <= end(); ++first_it)
                 {
@@ -452,13 +462,15 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             }
             size_t size()const { return (this->__size_); }
             size_t capacity()const { return (this->__capacity_); }
-            size_type max_size() const { return __alloc.max_size(); }
+            size_type max_size() const { 
+                return std::min<size_type>(__alloc.max_size(), std::numeric_limits<difference_type>::max()); 
+                }
             void push_back( const T& val)
             {
                 if(!this->v_ptr) { 
                     this->v_ptr = __allocate(1); 
                     __alloc.construct(this->v_ptr, val);
-                    __size_++;
+                    __size_ = 1;
                     __capacity_= 1;
                     return ;
                 }
@@ -474,15 +486,15 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                     if(this->v_ptr)
                     {
                         this->clear();
-                        __alloc.deallocate(this->v_ptr, this->__capacity_);
+                        if(this->v_ptr)
+                            __alloc.deallocate(this->v_ptr, this->__capacity_);
                     }
                     this->__capacity_ *= 2;
                     this->__size_ = tmp_size;
                     this->v_ptr = tmp;
                 }
                 __alloc.construct(this->v_ptr + __size_, val);
-                this->__size_++;
-                
+                this->__size_++;   
             }
             void pop_back()
             {
@@ -515,7 +527,10 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                 if(this->v_ptr)
                 {
                     this->clear();
-                    __alloc.deallocate(this->v_ptr, this->__capacity_);
+                    if(this->v_ptr)
+                    {
+                        __alloc.deallocate(this->v_ptr, this->__capacity_);
+                    }
                 }
             }
         protected:
@@ -524,33 +539,33 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             allocator_type													__alloc;
             pointer															v_ptr;
     };
-    template<class T>
-    bool operator==(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    template<class T, class _Allocator>
+    bool operator==(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {
         return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin()));
     }
-    template<class T>
-    bool operator!=(const ft::vector<T> &lhs, const ft::vector<T> &rhs )
+    template<class T, class _Allocator>
+    bool operator!=(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs )
     {
         return !(lhs == rhs);
     }
-    template<class T>
-    bool operator<(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    template<class T, class _Allocator>
+    bool operator<(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {
         return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
-    template<class T>
-    bool operator>(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    template<class T, class _Allocator>
+    bool operator>(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {
         return rhs < lhs;
     }
-    template<class T>
-    bool operator<=(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    template<class T, class _Allocator>
+    bool operator<=(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {
         return !(rhs < lhs);
     }
-    template<class T>
-    bool operator>=(const ft::vector<T> &lhs, const ft::vector<T> &rhs)
+    template<class T, class _Allocator>
+    bool operator>=(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {
         return !(lhs < rhs);
     }
