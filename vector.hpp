@@ -23,19 +23,47 @@ template<class Inputiterator>
 Inputiterator operator+(const size_t n, Inputiterator &obj) {
     return obj + n;
 }
-    template<bool Cond, class T = void> struct enable_if {};
-    template<class T> struct enable_if<true, T> { typedef T type; };
+template<bool Cond, class T = void> struct enable_if {};
+template<class T> struct enable_if<true, T> { typedef T type; };
+template<class Iterator>
+struct iterator_traits
+{
+    typedef typename Iterator::difference_type difference_type;
+    typedef typename Iterator::value_type value_type;
+    typedef typename Iterator::pointer pointer;
+    typedef typename Iterator::reference reference;
+    typedef typename Iterator::iterator_category iterator_category;
+};
+
+template<class T>
+struct iterator_traits<T*>
+{
+    typedef std::ptrdiff_t difference_type;
+    typedef T value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    typedef std::random_access_iterator_tag iterator_category;
+};
+template< class T >
+struct iterator_traits<const T*>
+{
+    typedef std::ptrdiff_t difference_type;
+    typedef T value_type;
+    typedef T* pointer;
+    typedef T& reference;
+    typedef std::random_access_iterator_tag iterator_category;
+};
     //---------------------------------------iterator-----
     template <class _TYPE>
     class iterator
     {
         public:
             typedef _TYPE 		                                                    iterator_type;
-            typedef typename std::iterator_traits<iterator_type>::iterator_category iterator_category;
-            typedef typename std::iterator_traits<iterator_type>::value_type        value_type;
-            typedef typename std::iterator_traits<iterator_type>::difference_type   difference_type;
-            typedef typename std::iterator_traits<iterator_type>::pointer           pointer;
-            typedef typename std::iterator_traits<iterator_type>::reference         reference;
+            typedef typename ft::iterator_traits<iterator_type>::iterator_category iterator_category;
+            typedef typename ft::iterator_traits<iterator_type>::value_type        value_type;
+            typedef typename ft::iterator_traits<iterator_type>::difference_type   difference_type;
+            typedef typename ft::iterator_traits<iterator_type>::pointer           pointer;
+            typedef typename ft::iterator_traits<iterator_type>::reference         reference;
 			pointer																	it_ptr;
             iterator operator++(int){ iterator tmp(*this); this->it_ptr++; return (tmp); }
             iterator& operator++() { this->it_ptr++; return (*this); }
@@ -111,12 +139,12 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
     {
         public:
             typedef _TYPE 		                                                    iterator_type;
-            typedef typename std::iterator_traits<iterator_type>::iterator_category iterator_category;
-            typedef typename std::iterator_traits<iterator_type>::value_type        value_type;
-            typedef typename std::iterator_traits<iterator_type>::difference_type   difference_type;
-            typedef typename std::iterator_traits<iterator_type>::pointer           pointer;
-            typedef typename std::iterator_traits<iterator_type>::reference         reference;
-			iterator_type																	it_ptr;
+            typedef typename ft::iterator_traits<iterator_type>::iterator_category iterator_category;
+            typedef typename ft::iterator_traits<iterator_type>::value_type        value_type;
+            typedef typename ft::iterator_traits<iterator_type>::difference_type   difference_type;
+            typedef typename ft::iterator_traits<iterator_type>::pointer           pointer;
+            typedef typename ft::iterator_traits<iterator_type>::reference         reference;
+			iterator_type														    it_ptr;
             reverse_iterator operator++(int){ reverse_iterator tmp(*this); this->it_ptr--; return (tmp); }
             reverse_iterator& operator++() { this->it_ptr--; return (*this); }
             reverse_iterator operator--(int){ reverse_iterator tmp(*this); this->it_ptr++; return (tmp); }
@@ -322,7 +350,7 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                 // }
             }
             template <class InputIterator>    
-            void insert (iterator position, InputIterator first, InputIterator last)
+            void insert (iterator position, InputIterator first, InputIterator last, typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
             {
                 vector GetSize(first, last);
                 vector tmp_v;
@@ -344,6 +372,10 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             {
                 vector tmp_v;
                 iterator first = begin();
+                if(this->__size_ + 1 > this->__capacity_)
+                    tmp_v.reserve(this->__capacity_ + 1);
+                else
+                    tmp_v.reserve(this->__capacity_);
                 tmp_v.reserve(this->__size_ + n);
                 for(;first <= end(); ++first)
                 {
@@ -362,7 +394,9 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                 vector tmp_v;
                 iterator first = begin();
                 iterator tmp;
-                tmp_v.reserve(this->__size_ + 1);
+                if(this->__size_ + 1 > this->__capacity_)
+                    tmp_v.reserve(this->__size_ + 1);
+                tmp_v.reserve(this->__capacity_);
                 for(;first <= end();++first)
                 {
                     if(first == pos)
