@@ -19,11 +19,6 @@
 #include <algorithm>
 namespace ft
 {
-    template<class vector>
-    void swap(vector &v1, vector& v2)
-    {
-        v1.swap(v2);
-    }
 template<class Inputiterator>
 Inputiterator operator+(const size_t n, Inputiterator &obj) {
     return obj + n;
@@ -32,7 +27,7 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
     template<class T> struct enable_if<true, T> { typedef T type; };
     //---------------------------------------iterator-----
     template <class _TYPE>
-    class __vector_iterators
+    class iterator
     {
         public:
             typedef _TYPE 		                                                    iterator_type;
@@ -42,24 +37,24 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             typedef typename std::iterator_traits<iterator_type>::pointer           pointer;
             typedef typename std::iterator_traits<iterator_type>::reference         reference;
 			pointer																	it_ptr;
-            __vector_iterators operator++(int){ __vector_iterators tmp(*this); this->it_ptr++; return (tmp); }
-            __vector_iterators& operator++() { this->it_ptr++; return (*this); }
-            __vector_iterators operator--(int){ __vector_iterators tmp(*this); this->it_ptr--; return (tmp); }
-            __vector_iterators& operator--() { this->it_ptr--; return (*this); }
-            __vector_iterators& operator+=(std::ptrdiff_t n) { this->it_ptr += n; return (*this); }
-            __vector_iterators& operator-=(std::ptrdiff_t n) { this->it_ptr -= n; return (*this); }
-            __vector_iterators(){}
-            __vector_iterators(const pointer &obj)
+            iterator operator++(int){ iterator tmp(*this); this->it_ptr++; return (tmp); }
+            iterator& operator++() { this->it_ptr++; return (*this); }
+            iterator operator--(int){ iterator tmp(*this); this->it_ptr--; return (tmp); }
+            iterator& operator--() { this->it_ptr--; return (*this); }
+            iterator& operator+=(std::ptrdiff_t n) { this->it_ptr += n; return (*this); }
+            iterator& operator-=(std::ptrdiff_t n) { this->it_ptr -= n; return (*this); }
+            iterator(){}
+            iterator(const pointer &obj)
             {
                 this->it_ptr = obj;
             }
 			template<class P>
-            __vector_iterators(const __vector_iterators<P> &obj)
+            iterator(const iterator<P> &obj)
             {
                 *this = obj;
             }
             template<class P>
-			__vector_iterators& operator=(const __vector_iterators<P> &obj)
+			iterator& operator=(const iterator<P> &obj)
 			{
 				if(this->it_ptr != obj.it_ptr)
 					this->it_ptr = obj.it_ptr;
@@ -77,40 +72,43 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             {
                 return *it_ptr;
             }
-            __vector_iterators operator+(long n)
+            iterator operator+(long n)
             {
-                __vector_iterators tmp = *this;
+                iterator tmp = *this;
                 tmp.it_ptr+=n;
                 return tmp;
             }
-            __vector_iterators operator-(long n)
+            iterator operator-(long n)
             {
-                __vector_iterators tmp = *this;
+                iterator tmp = *this;
                 tmp.it_ptr-=n;
                 return tmp;
             }
-            long operator-(const __vector_iterators &obj)const
+            long operator-(const iterator &obj)const
             {
                 return (this->it_ptr - obj.it_ptr);
             }
+            iterator_type base() const
+            {
+                return (it_ptr);
+            }
             template<class P>
-            bool operator==(const __vector_iterators<P>& obj)const { return (this->it_ptr == obj.it_ptr ? 1 : 0); }
+            bool operator==(const iterator<P>& obj)const { return (this->it_ptr == obj.it_ptr ? 1 : 0); }
             template<class P>
-            bool operator!=(const __vector_iterators<P>& obj)const { return (this->it_ptr != obj.it_ptr ? 1 : 0); }
+            bool operator!=(const iterator<P>& obj)const { return (this->it_ptr != obj.it_ptr ? 1 : 0); }
             template<class P>
-            bool operator>(const __vector_iterators<P> &obj)const{ return (this->it_ptr > obj.it_ptr ? 1 : 0); }
+            bool operator>(const iterator<P> &obj)const{ return (this->it_ptr > obj.it_ptr ? 1 : 0); }
             template<class P>
-            bool operator<(const __vector_iterators<P>& obj)const{ return (this->it_ptr < obj.it_ptr ? 1 : 0); }
+            bool operator<(const iterator<P>& obj)const{ return (this->it_ptr < obj.it_ptr ? 1 : 0); }
             template<class P>
-            bool operator>=(const __vector_iterators<P>& obj)const { return (this->it_ptr >= obj.it_ptr ? 1 : 0); }
+            bool operator>=(const iterator<P>& obj)const { return (this->it_ptr >= obj.it_ptr ? 1 : 0); }
             template<class P>
-            bool operator<=(const __vector_iterators<P>& obj)const { return (this->it_ptr <= obj.it_ptr ? 1 : 0); }
+            bool operator<=(const iterator<P>& obj)const { return (this->it_ptr <= obj.it_ptr ? 1 : 0); }
     };
     //----------------------------reverse_iterator
     template <class _TYPE>
-    class __vector_riterators
+    class reverse_iterator
     {
-        protected:
         public:
             typedef _TYPE 		                                                    iterator_type;
             typedef typename std::iterator_traits<iterator_type>::iterator_category iterator_category;
@@ -118,70 +116,76 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             typedef typename std::iterator_traits<iterator_type>::difference_type   difference_type;
             typedef typename std::iterator_traits<iterator_type>::pointer           pointer;
             typedef typename std::iterator_traits<iterator_type>::reference         reference;
-			pointer																	it_ptr;
-            __vector_riterators operator++(int){ __vector_riterators tmp(*this); this->it_ptr--; return (tmp); }
-            __vector_riterators& operator++() { this->it_ptr--; return (*this); }
-            __vector_riterators operator--(int){ __vector_riterators tmp(*this); this->it_ptr++; return (tmp); }
-            __vector_riterators& operator--() { this->it_ptr++; return (*this); }
-            __vector_riterators& operator+=(std::ptrdiff_t n) { this->it_ptr -= n; return (*this); }
-            __vector_riterators& operator-=(std::ptrdiff_t n) { this->it_ptr += n; return (*this); }
-			__vector_riterators(){}
-			__vector_riterators(const pointer &ptr)
-			{
-				this->it_ptr = ptr;
-			}
-            template<class other_type>
-			__vector_riterators(const other_type &obj)
-			{
-				*this = obj;
-			}
-            template<class p>
-			__vector_riterators& operator=(const __vector_riterators<p> &objs)
-			{
-				if(this->it_ptr != objs.it_ptr)
-				    this->it_ptr = objs.it_ptr;
-				return *this;
-			}
+			iterator_type																	it_ptr;
+            reverse_iterator operator++(int){ reverse_iterator tmp(*this); this->it_ptr--; return (tmp); }
+            reverse_iterator& operator++() { this->it_ptr--; return (*this); }
+            reverse_iterator operator--(int){ reverse_iterator tmp(*this); this->it_ptr++; return (tmp); }
+            reverse_iterator& operator--() { this->it_ptr++; return (*this); }
+            reverse_iterator& operator+=(std::ptrdiff_t n) { this->it_ptr -= n; return (*this); }
+            reverse_iterator& operator-=(std::ptrdiff_t n) { this->it_ptr += n; return (*this); }
+			reverse_iterator():it_ptr(NULL){}
+            explicit reverse_iterator(iterator_type x) : it_ptr(x)
+            {
+            }
+            template< class U >
+            reverse_iterator( const reverse_iterator<U>& other )
+            {
+                if(this->it_ptr != other.it_ptr)
+                    this->it_ptr  = other.base();
+            }
+
+            template< class U >
+            reverse_iterator& operator=( const reverse_iterator<U>& other )
+            {
+                this->it_ptr = other.base();
+                return *this;
+            }
+
             pointer operator->()
             {
-                return (this->it_ptr);
+                return &(this->operator*());
             }
             reference operator*() const
             {
-                return *it_ptr;
+                iterator_type tmp = it_ptr;
+                return *(--tmp);
             }
             reference operator[](std::ptrdiff_t index)
             {
-                return (*(this->it_ptr - index));
+                return (*(this->it_ptr - index - 1));
             }
-            __vector_riterators operator+(size_t n)
+            reverse_iterator operator+(size_t n)
             {
-                __vector_riterators tmp = *this;
+                reverse_iterator tmp = *this;
                 tmp.it_ptr-=n;
                 return tmp;
             }
-            __vector_riterators operator-(size_t n)
+            reverse_iterator operator-(size_t n)
             {
-                __vector_riterators tmp = *this;
+                reverse_iterator tmp = *this;
                 tmp.it_ptr += n;
                 return tmp;
             }
-            long operator-(const __vector_riterators &obj)const
+            long operator-(const reverse_iterator &obj)const
             {
                 return (obj.it_ptr - this->it_ptr);
             }
+            iterator_type base()const
+            {
+                return (it_ptr);
+            }
             template<class p>
-            bool operator==(const __vector_riterators<p>& obj) { return (this->it_ptr == obj.it_ptr ? 1 : 0); }
+            bool operator==(const reverse_iterator<p>& obj) { return (this->it_ptr == obj.it_ptr ? 1 : 0); }
             template<class p>
-            bool operator!=(const __vector_riterators<p>& obj) { return (this->it_ptr != obj.it_ptr ? 1 : 0); }
+            bool operator!=(const reverse_iterator<p>& obj) { return (this->it_ptr != obj.it_ptr ? 1 : 0); }
             template<class p>
-            bool operator>(const __vector_riterators<p>& obj) { return (this->it_ptr < obj.it_ptr ? 1 : 0); }
+            bool operator>(const reverse_iterator<p>& obj) { return (this->it_ptr < obj.it_ptr ? 1 : 0); }
             template<class p>
-            bool operator<(const __vector_riterators<p>& obj) { return (this->it_ptr > obj.it_ptr ? 1 : 0); }
+            bool operator<(const reverse_iterator<p>& obj) { return (this->it_ptr > obj.it_ptr ? 1 : 0); }
             template<class p>
-            bool operator>=(const __vector_riterators<p>& obj) { return (this->it_ptr <= obj.it_ptr ? 1 : 0); }
+            bool operator>=(const reverse_iterator<p>& obj) { return (this->it_ptr <= obj.it_ptr ? 1 : 0); }
             template<class p>
-            bool operator<=(const __vector_riterators<p>& obj) { return (this->it_ptr >= obj.it_ptr ? 1 : 0); }
+            bool operator<=(const reverse_iterator<p>& obj) { return (this->it_ptr >= obj.it_ptr ? 1 : 0); }
 
     };
     template <class T, class Allocator = std::allocator<T> >
@@ -196,10 +200,10 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             typedef typename allocator_type::reference						reference;
             typedef typename allocator_type::const_reference                const_reference;
             typedef typename allocator_type::difference_type                difference_type;
-            typedef class __vector_iterators<pointer>                      iterator;
-            typedef class __vector_riterators<pointer>                     reverse_iterator;
-            typedef class __vector_iterators<const_pointer>                const_iterator;
-            typedef class __vector_riterators<const_pointer>               const_reverse_iterator;
+            typedef ft::iterator<pointer>                                       iterator;
+            typedef ft::reverse_iterator<iterator>                               reverse_iterator;
+            typedef ft::iterator<const_pointer>                             const_iterator;
+            typedef ft::reverse_iterator<const_iterator>                     const_reverse_iterator;
             explicit vector(const allocator_type& alloc = allocator_type()):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL) {}  
             explicit vector(size_type n, const value_type& val = value_type(),  const Allocator& alloc = Allocator()):__capacity_(n),__size_(n), __alloc(alloc), v_ptr(NULL)
             {
@@ -208,20 +212,36 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                     __alloc.construct(this->v_ptr + i, val);
             }
 			template<class InputIterator>
-			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type() ,typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0):__alloc(alloc)
+			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type(), typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0):__alloc(alloc)
 			{
-                vector tmp_v;
-                for(;first != last; ++first)
-                    tmp_v.push_back(*first);
-                if(tmp_v.size())
+                if(!std::__is_input_iterator<InputIterator>::value)
                 {
-                    size_type tmp_size = tmp_v.size();
-                    this->v_ptr = __allocate(tmp_size);
-                    this->__capacity_ = tmp_size;
-                    for(this->__size_ = 0 ; __size_ < tmp_size; ++__size_)
+                    vector tmp_v;
+                    for(;first != last; ++first)
+                        tmp_v.push_back(*first);
+                    if(tmp_v.size())
                     {
-                        __alloc.construct(this->v_ptr + __size_, tmp_v[__size_]);
+                        size_type tmp_size = tmp_v.size();
+                        this->v_ptr = __allocate(tmp_size);
+                        this->__capacity_ = tmp_size;
+                        for(this->__size_ = 0 ; __size_ < tmp_size; ++__size_)
+                        {
+                            __alloc.construct(this->v_ptr + __size_, tmp_v[__size_]);
+                        }
                     }
+                }
+                else
+                {
+                    size_t size = std::distance(first, last);
+                    this->v_ptr = __allocate(size);
+                    int i = 0;
+                    for(; first < last; ++first)
+                    {
+                        __alloc.construct(this->v_ptr + i, *first);
+                        i++;
+                    }
+                    this->__size_  = size;
+                    this->__capacity_ = size;
                 }
 			}
             vector(const vector &obj)
@@ -299,15 +319,14 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                     __alloc.construct(this->v_ptr + __size_, tmp_v[__size_]);
 					++__size_;
                 }
+                // }
             }
             template <class InputIterator>    
             void insert (iterator position, InputIterator first, InputIterator last)
             {
                 vector GetSize(first, last);
-                std::cout << "GETSIZE = " << GetSize.size() << std::endl;
                 vector tmp_v;
                 tmp_v.reserve(this->__size_ + GetSize.size());
-                std::cerr << this->__size_  << " && " << GetSize.size() << std::endl;
                 iterator first_it = begin();
                 for(;first_it <= end(); ++first_it)
                 {
@@ -350,7 +369,6 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                     {
                         tmp_v.push_back(value);
                         tmp = tmp_v.end() - 1;
-    
                     }
                     if(first != end())
                         tmp_v.push_back(*first);
@@ -386,6 +404,8 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             }
             void assign(size_t n, const value_type &val)
             {
+                    // vector Svect(n, val);
+                    // this->swap(Svect);
                 this->clear();
                 if(n < this->__capacity_)
                 {
@@ -394,21 +414,17 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                 }
                 else
                 {
-                    if(this->v_ptr)
-                    {
-                        __alloc.deallocate(this->v_ptr, this->__capacity_);
-                    }
-                    this->__capacity_ = n;
-                    this->v_ptr = __allocate(n);
-                    for(this->__size_ = 0; __size_ < n; ++__size_)
-                        __alloc.construct(v_ptr + __size_, val);
+                    vector Svect(n, val);
+                    this->swap(Svect);
                 }
             }
             bool empty() { return (this->__size_ > 0 ? 0 : 1); }
             void clear() 
             {
                 for(size_type i = 0; i < this->__size_; ++i)
+                {
                     __alloc.destroy(this->v_ptr + i); 
+                }
                 this->__size_ = 0;
             }
             void reserve(size_t __n)
@@ -486,8 +502,7 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
                     if(this->v_ptr)
                     {
                         this->clear();
-                        if(this->v_ptr)
-                            __alloc.deallocate(this->v_ptr, this->__capacity_);
+                        __alloc.deallocate(this->v_ptr, this->__capacity_);
                     }
                     this->__capacity_ *= 2;
                     this->__size_ = tmp_size;
@@ -504,6 +519,10 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
             reference operator[]( size_type pos )const
             {
                 return (this->v_ptr[pos]);
+            }
+            allocator_type get_allocator() const
+            {
+                return (this->__alloc);
             }
             vector& operator=(const vector &obj)
             {
@@ -569,5 +588,10 @@ Inputiterator operator+(const size_t n, Inputiterator &obj) {
     {
         return !(lhs < rhs);
     }
+    // template<class T>
+    // void swap(T &v1, T& v2)
+    // {
+    //     v1.swap(v2);
+    // }
 };
 #endif

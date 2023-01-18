@@ -6,12 +6,13 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/01/17 11:43:05 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/01/18 10:22:21 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include <memory>
 #include <stack>
 #include <typeinfo>
@@ -53,26 +54,32 @@ public:
         this->l = nullptr;
     };
 };
-void iterator_test(ft::vector<int> vector)
-{
-    (void)vector;
-    std::unique_ptr<B> k2(new B(3));
-    std::unique_ptr<B> k3(new B(4));
-    std::unique_ptr<B> k4(new B(1));
-    ft::vector<A> vv;
-    ft::vector<B*> v1;
-
-    v1.push_back(&(*k2));
-    v1.push_back(&(*k3));
-    v1.push_back(&(*k4));
-   vv.insert(vv.begin(), v1.begin(), v1.end());
+std::vector<int> assign_test(ft::vector<int> vector) {
+    std::vector<int> v;
+    ft::vector<int> tmp, tmp2;
+    vector.assign(3, 3);
+    tmp.assign(4000 * _ratio, 1);
+    tmp2.assign(4 * _ratio, 1);
+    vector.assign(tmp.begin(), tmp.end());
+    v.push_back(vector[1]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    vector.assign(tmp2.begin(), tmp2.end());
+    v.push_back(vector[444]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    return v;
 }
 
 int main()
 {
+    ft::vector<int> v;
+    v.push_back(1);
+    v.push_back(2);
+    v.push_back(3);
+    std::vector<int>::reverse_iterator my_rit2(v.end());
+    std::cout <<my_rit2[1] << std::endl;
 
-    ft::vector<int> vector;
-    iterator_test(vector);
-    system("leaks a.out");
+    
 }
     
