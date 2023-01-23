@@ -23,6 +23,16 @@ template<class Inputiterator>
 Inputiterator operator+(const size_t n, Inputiterator &obj) {
     return obj + n;
 }
+template <class T, class U>
+struct is_same
+{
+    const static bool value = false;
+};
+template <class T>
+struct is_same<T, T>{
+    const static bool value = true;
+};
+
 template<bool Cond, class T = void> struct enable_if {};
 template<class T> struct enable_if<true, T> { typedef T type; };
 template<class Iterator>
@@ -176,7 +186,7 @@ struct iterator_traits<const T*>
             reference operator*() const
             {
                 iterator_type tmp = it_ptr;
-                return *(--tmp);
+                return *(tmp);
             }
             reference operator[](std::ptrdiff_t index)
             {
@@ -228,10 +238,10 @@ struct iterator_traits<const T*>
             typedef typename allocator_type::reference						reference;
             typedef typename allocator_type::const_reference                const_reference;
             typedef typename allocator_type::difference_type                difference_type;
-            typedef ft::iterator<pointer>                                       iterator;
-            typedef ft::reverse_iterator<iterator>                               reverse_iterator;
+            typedef ft::iterator<pointer>                                   iterator;
+            typedef ft::reverse_iterator<iterator>                          reverse_iterator;
             typedef ft::iterator<const_pointer>                             const_iterator;
-            typedef ft::reverse_iterator<const_iterator>                     const_reverse_iterator;
+            typedef ft::reverse_iterator<const_iterator>                    const_reverse_iterator;
             explicit vector(const allocator_type& alloc = allocator_type()):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL) {}  
             explicit vector(size_type n, const value_type& val = value_type(),  const Allocator& alloc = Allocator()):__capacity_(n),__size_(n), __alloc(alloc), v_ptr(NULL)
             {
@@ -242,7 +252,7 @@ struct iterator_traits<const T*>
 			template<class InputIterator>
 			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type(), typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0):__alloc(alloc)
 			{
-                if(!std::__is_input_iterator<InputIterator>::value)
+                if(ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
                 {
                     vector tmp_v;
                     for(;first != last; ++first)
@@ -263,7 +273,7 @@ struct iterator_traits<const T*>
                     size_t size = std::distance(first, last);
                     this->v_ptr = __allocate(size);
                     int i = 0;
-                    for(; first < last; ++first)
+                    for(; first != last; ++first)
                     {
                         __alloc.construct(this->v_ptr + i, *first);
                         i++;
@@ -347,36 +357,67 @@ struct iterator_traits<const T*>
                     __alloc.construct(this->v_ptr + __size_, tmp_v[__size_]);
 					++__size_;
                 }
-                // }
             }
             template <class InputIterator>    
             void insert (iterator position, InputIterator first, InputIterator last, typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
             {
-                vector GetSize(first, last);
-                vector tmp_v;
-                tmp_v.reserve(this->__size_ + GetSize.size());
-                iterator first_it = begin();
-                for(;first_it <= end(); ++first_it)
+                if(!ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
                 {
-                    if(first_it == position)
-                    {
-                        for(size_type i = 0; i < GetSize.size(); ++i)
-                            tmp_v.push_back(GetSize[i]);
-                    }
-                    if(first_it != end())
-                        tmp_v.push_back(*first_it);
+                    vector tmp_v;
+                    size_t c_res = 0;
+                    size_t n = std::distance(first, last);
+                    if(this->__size_ + n > this->__capacity_)
+                        c_res = this->__size_ + n;
+                    else
+                        c_res = this->__capacity_;
+                    tmp_v.reserve(c_res);
+                    tmp_v.assign(begin(), position);
+                    for(; first != last; ++first)
+                        tmp_v.push_back(*first);
+                    for(iterator it = position; it < end(); ++it)
+                        tmp_v.push_back(*it);
+                    this->swap(tmp_v);
                 }
-                this->swap(tmp_v);
+                else
+                {
+                    vector GetSize(first, last);
+                    vector tmp_v;
+                    tmp_v.reserve(this->__size_ + GetSize.size());
+                    iterator first_it = begin();
+                    for(;first_it <= end(); ++first_it)
+                    {
+                        if(first_it == position)
+                        {
+                            for(size_type i = 0; i < GetSize.size(); ++i)
+                                tmp_v.push_back(GetSize[i]);
+                        }
+                        if(first_it != end())
+                            tmp_v.push_back(*first_it);
+                    }
+                    this->swap(tmp_v);
+                }
             }
             void insert(iterator position, size_type n, const value_type& val)
             {
+
+                if(this->__size_ + n <= this->__capacity_)
+                {
+                    vector tmp(position, end());
+                    this->resize(this->__size_ - tmp.size());
+                    for(size_type i = 0; i < n; ++i)
+                        this->push_back(val);
+                    for(size_type i = 0; i < tmp.size(); ++i)
+                        this->push_back(tmp[i]);
+                    return;
+                }
                 vector tmp_v;
                 iterator first = begin();
-                if(this->__size_ + 1 > this->__capacity_)
-                    tmp_v.reserve(this->__capacity_ + 1);
+                size_type c = 0;
+                if(!this->__capacity_ || __capacity_ * 2 < n)
+                    c = this->__capacity_ + n;
                 else
-                    tmp_v.reserve(this->__capacity_);
-                tmp_v.reserve(this->__size_ + n);
+                    c = this->__capacity_ * 2;
+                tmp_v.reserve(c);
                 for(;first <= end(); ++first)
                 {
                     if(first == position)
@@ -391,12 +432,25 @@ struct iterator_traits<const T*>
             }
             iterator insert( const_iterator pos, const T& value )
             {
+                if(this->__size_ + 1 <= this->__capacity_)
+                {
+                    const_iterator it = end();
+                    vector tmp(pos, it);
+                    this->resize(this->__size_ - tmp.size());
+                    this->push_back(value);
+                    for(size_type i = 0; i < tmp.size(); ++i)
+                        this->push_back(tmp[i]);
+                    return (this->end() - tmp.size() - 1);
+                }
                 vector tmp_v;
                 iterator first = begin();
                 iterator tmp;
-                if(this->__size_ + 1 > this->__capacity_)
-                    tmp_v.reserve(this->__size_ + 1);
-                tmp_v.reserve(this->__capacity_);
+                size_type c = 0;
+                if(!this->__capacity_)
+                    c = 1;
+                else
+                    c = this->__capacity_ * 2;
+                tmp_v.reserve(c);
                 for(;first <= end();++first)
                 {
                     if(first == pos)
@@ -427,7 +481,7 @@ struct iterator_traits<const T*>
             iterator erase( iterator pos )
             {
                 iterator first_it(pos);
-                iterator tmp_one(pos);
+                iterator tmp_one(pos); 
                 for(;first_it < this->end() - 1; ++pos)
                 {
                     *pos = *(++first_it);
@@ -438,8 +492,6 @@ struct iterator_traits<const T*>
             }
             void assign(size_t n, const value_type &val)
             {
-                    // vector Svect(n, val);
-                    // this->swap(Svect);
                 this->clear();
                 if(n < this->__capacity_)
                 {

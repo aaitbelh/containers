@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/01/18 14:12:13 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/01/23 12:39:22 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,126 +26,72 @@
 
 
 
-class B {
-public:
-    char *l;
-    int i;
-    B():l(nullptr), i(1) {};
-    B(const int &ex) {
-        this->i = ex;
-        this->l = new char('a');
-    };
-    virtual ~B() {
-        delete this->l;
-        this->l = nullptr;
-    };
-};
-
-class A : public B {
-public:
-    A():B(){};
-    A(const B* ex){
-        this->l = new char(*(ex->l));
-        this->i = ex->i;
-        if (ex->i == -1) throw "n";
-    }
-    ~A() {
-        delete this->l;
-        this->l = nullptr;
-    };
-};
-std::vector<int> assign_test(ft::vector<int> vector) {
-    std::vector<int> v;
-    ft::vector<int> tmp, tmp2;
-    vector.assign(3, 3);
-    tmp.assign(4000 * _ratio, 1);
-    tmp2.assign(4 * _ratio, 1);
-    vector.assign(tmp.begin(), tmp.end());
-    v.push_back(vector[1]);
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
-    vector.assign(tmp2.begin(), tmp2.end());
-    v.push_back(vector[444]);
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
-    return v;
-}
-
 int main()
 {
-        std::string str, ft_str;
-        ft::vector<std::string>::size_type s, ft_s;
-        ft::vector<std::string>::size_type c, ft_c;
-        ft::vector<std::string>::iterator ft_it;
-        std::vector<std::string>::iterator it;
-        {
-            std::vector<std::string> v;
-            ft::vector<std::string> ft_v;
-            it = v.insert(v.begin(), "hello");
-            ft_it = ft_v.insert(ft_v.begin(), "hello");
-            ft_it->length();
 
-            s = v.size();
-            ft_s = ft_v.size();
-            c = v.capacity();
-            ft_c = ft_v.capacity();
-            for (size_t i = 0; i < v.size(); ++i)
-                str += v[i];
-            for (size_t i = 0; i < ft_v.size(); ++i)
-                ft_str += ft_v[i];
-        if(((str == ft_str) && (s == ft_s) && (c == ft_c) && (*ft_it == *it)))
-            std::cout << "TRUE 1" << std::endl;
-        }
-        // insert at the end
-        {
-            std::vector<std::string> v;
-            ft::vector<std::string> ft_v;
-
-            it = v.insert(v.end(), "hello");
-            ft_it = ft_v.insert(ft_v.end(), "hello");
-            ft_it->length();
-
-            str.clear();
-            ft_str.clear();
-
-            s = v.size();
-            ft_s = ft_v.size();
-            c = v.capacity();
-            ft_c = ft_v.capacity();
-            for (size_t i = 0; i < v.size(); ++i)
-                str += v[i];
-            for (size_t i = 0; i < ft_v.size(); ++i)
-                ft_str += ft_v[i];
-            if(((str == ft_str) && (s == ft_s) && (c == ft_c) && (*it == *ft_it)))
-                std::cout << "TRUE 2 " << std::endl;
-            
-        }
-        /*---------------------------------------------------------------------------------------------------*/
-        /*------------------------------- test 2: the vector capacity >= size + the new element ----------------------------------------*/
-        {
-            std::vector<std::string> v(20, "string");
-            ft::vector<std::string> ft_v(20, "string");
-            ft::vector<std::string>::iterator valid_it;
-
-            v.reserve(30);
-            ft_v.reserve(30);
-            valid_it = ft_v.begin();
-            it = v.insert(v.begin() + 10, "hello");
-            ft_it = ft_v.insert(ft_v.begin() + 10, "hello");
-            ft_it->length();
-
-            str.clear();
-            ft_str.clear();
-            s = v.size();
-            ft_s = ft_v.size();
-            c = v.capacity();
-            ft_c = ft_v.capacity();
-            for (size_t i = 0; i < v.size(); ++i)
-                str += v[i];
-            for (size_t i = 0; i < ft_v.size(); ++i)
-                ft_str += ft_v[i];
-            if(((str == ft_str) && (s == ft_s) && (c == ft_c) && (*it == *ft_it) && (&(*valid_it) == &(*ft_v.begin()))))
-                std::cout << "TRUE 3 " << std::endl;
-        }
+    std::size_t s_size = 32;                                                                       \
+    std::size_t b_size = 64;                                                                       \
+    (void)s_size;                                                                                  \
+    (void)b_size;                                                                                  \
+    std::string s_string[32] = {                                                                   \
+        "QExoqp0nICr0sXsHqty2", "naax9QcpJhvaL7DezsNQ", "25ZTtB6wbptfbxM8AvHB",                    \
+        "tShYNtc0MkdjqLrOatgz", "7Z3kf1Qec0NnsLSEpbOt", "WhkSNrKJC966fvjZ2Or1",                    \
+        "8vlxlFRRgW7yYj4GO7dt", "5sq1aoT8zP0HaHj3nFOK", "61Dv31GYZhkgjKCErpng",                    \
+        "l0IIcWWHhOcPzoxEamQM", "bE1RYclskwXlhCm46YFs", "kXeoi5qz94JYPqSDTs79",                    \
+        "TFsQP1dz8VVos9KzUpY0", "b3wYQR7An193gjgYuRj3", "xSmyNsnSJ47jLqrvbpyr",                    \
+        "guAIP2Wq43Gf8VhHsyu5", "yT6c2loPebHovnq9BQog", "3qvU1xcVm2g1DKFDlqh4",                    \
+        "L0q8RR9P41VD4sVjdnWl", "YdjESsIZM4b1oGQPjpBe", "l1ZVQbWKw7brHUSimJgq",                    \
+        "xdn0cf4vqRzpfXWtl10G", "lYnZvpqaV0s8DowMZwzV", "8P1cyKrwJNLoJyvLjYqO",                    \
+        "4MhOXNbAX23CEijO5cRT", "tHe3miAwCOVQbuoLaEP2", "l6uNLsc8fiLl3eWoG6j6",                    \
+        "477xt6l0lph9ALQdr4HX", "D9UJNe4s8YF02LhrwOdl", "dLCisBNOdE8yugntu6cj",                    \
+        "YvY4aQFHgAuagn4dFLO1", "eGR6Dtv7LW75qlV5Fkik"                                             \
+    };                                                                                             \
+    std::string b_string[64] = {                                                                   \
+        "uvg6KqtcgduR31n3ajsv", "wbiAcjgojb9JOagZwyMn", "ATZKCzaPOqgkhPjwuGlf",                    \
+        "MOhaJs56yjOw8f6nLPRA", "0gyB2Tr42v6awMw2nK7J", "e6GsiLFUuoDpVFEhJKZ1",                    \
+        "z0jXAhiV9keBsaLOY0Xf", "P68p2ZAosHJdmoZh1C7N", "Pu3EuZVeY0TCO3ojdK0t",                    \
+        "z7jCHMooHCS73M8GygKB", "uT4KoK83JrZxZjkul7ty", "g8gfrZoY5XwfzRusvHvv",                    \
+        "7PGmkM0OSRnYREt9mFIP", "q1od7mBIpPEsCtpF9kdw", "XQo0LWId5TdZnLnpUNOb",                    \
+        "U0m1R0kFFhAFyS6hmHHw", "K0lPKfxJxIOnE8QB90xn", "cZ5xyQifMJhrKxqBK9A7",                    \
+        "cFBiwjfYw7Js6qEGy5Kt", "1tW0KWfXxeFO69tByqcE", "3Fvq9NxBrhPXHe0IlIVx",                    \
+        "MSRDjdFRvHAhFGhiMtDe", "zGm2joMh71jQkYzg5L4V", "Mq4RRaeLvSAO0z2ibp8Q",                    \
+        "WnLFYnQKP8TNJkqVVbUg", "E98UphbbVSzrW5Mzurmg", "F8HRxeEcaTZDkFPkioij",                    \
+        "jmUVl4Q8X5BwVNzXN219", "n7Xp4w4FwzGKit7AI4SO", "4MxXYr6rKOcXLt9UkVd2",                    \
+        "4RVTDsADtRyboaai9d29", "XaSqsrrtdhAfFoJIc5KK", "9Z9jdVCrTT09bg348ceb",                    \
+        "I6uqLG9dO5mfNdSMwOYm", "UwMTzJPlbnhgwbHpDi6w", "DebjMP9afncYE6GhhO00",                    \
+        "YGPuscYDiGfAjY1UWST0", "K6gbvgGjVZgEFUDlkdSk", "8xCBPI0w6TpC0RA62c2W",                    \
+        "fYMxkNwmKg3moP8KvD9v", "QpPdhwhEYjIugg3OPcPH", "qQBXjSn43I3EMP54SyxZ",                    \
+        "7qvdKwoW1CQEZTWPvuSC", "rCT212rdYO0zTGHXesKg", "dBHvlHsBwcR9MkkenYYG",                    \
+        "NQiSlergqR8fVbOeivLj", "xYVqsV147UIe7jVBVwXo", "tcxayO4DdEJ885TbqUMy",                    \
+        "9TGSMTD8U8ksRpHqq0cL", "TIJ16jCv9BSUiWvhbF9T", "BM9GL2ig1hePkA6lM6Ck",                    \
+        "TfJTYB9JQMU6CGcYg20Q", "Fg6e5YT2FQbpTZNTDqdo", "LI5q6ml40MeE9H1dPb93",                    \
+        "OaxJUSm3nYN9Y8Ela7sS", "BgBeODAwXz7xJo50Rwqd", "xdkgKj1dEoJ6zuVhkvvo",                    \
+        "olIewtUEvXJgs1lB9bCn", "dTsPDS0x2uXtcgOIJHb8", "DYvJ2phLppGNZKboTBrd",                    \
+        "DjNFMtt9PxkzqvWBHI6j", "1Z3YkeTFlPniKnzFhzgu", "76XqQg6hqMf5IXxKPOEs",                    \
+        "gzaapTWW7i9EZjjzLeK6"                                                                     \
+    };                                                                                             \
+    (void)s_string;                                                                                \
+    (void)b_string;
+    {
+        ft::vector<std::string> v;
+        ft::vector<std::string>::iterator it = v.insert(v.end(), b_string[54]);//we insert a element in  a empty vector so the size and capcity will equal to 1
+        it = v.insert(v.end(), b_string[23]);
+        //then we insert a secon element in the end of the vector the capacity is not enough so we need to add more capacity so it will equal to 2 because we double it as like vector behavior do
+        it = v.insert(v.begin(), b_string[0]);
+        // next we add an element to the begin and the capacity is less to so we need to extend it so 3 < capacity * 2 the capacity will equal to 4
+        // size = 3 && capacity = 4 -> resize = size - distance .. resize = 2 // [1]*[2][3]
+        it = v.insert(v.begin() + 1, b_string[0]);
+        // add an other element so the capacity it enough to add it the element will insert normali in the original vector with out any change in the capacity 
+        std::cout << v.size() << std::endl;
+        std::cout << v.capacity() << std::endl;
+        std::cout << "------------------------------------------" << std::endl;
+        std::vector<std::string> v2;
+        std::vector<std::string>::iterator it2 = v2.insert(v2.end(), b_string[54]);
+        it2 = v2.insert(v2.end(), b_string[23]);
+        it2 = v2.insert(v2.begin(), b_string[0]);
+        it2 = v2.insert(v2.begin() + 1, b_string[0]);
+        std::cout << v2.size() << std::endl;
+        std::cout << v2.capacity() << std::endl;
+        
+    }
 }
-    
