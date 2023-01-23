@@ -143,7 +143,7 @@ struct iterator_traits<const T*>
             template<class P>
             bool operator<=(const iterator<P>& obj)const { return (this->it_ptr <= obj.it_ptr ? 1 : 0); }
     };
-    //----------------------------reverse_iterator
+    //----------------------------ƒ
     template <class _TYPE>
     class reverse_iterator
     {
@@ -402,13 +402,20 @@ struct iterator_traits<const T*>
 
                 if(this->__size_ + n <= this->__capacity_)
                 {
-                    vector tmp(position, end());
-                    this->resize(this->__size_ - tmp.size());
-                    for(size_type i = 0; i < n; ++i)
-                        this->push_back(val);
-                    for(size_type i = 0; i < tmp.size(); ++i)
-                        this->push_back(tmp[i]);
-                    return;
+                    iterator tmp = end();
+                    size_t i = size();
+                    for(; i > 0; --i)
+                    {
+                        if(tmp == position)
+                            break;
+                        if(i <= this->__size_)
+                            __alloc.destroy(this->v_ptr + i - 1);
+                        __alloc.construct(this->v_ptr + i + n - 1, *(--tmp));
+                    }
+                    for(size_t j = 0; j < n; ++j)
+                        __alloc.construct(this->v_ptr + i + j, val);
+                    this->__size_ += n;
+                    return ;
                 }
                 vector tmp_v;
                 iterator first = begin();
@@ -430,17 +437,21 @@ struct iterator_traits<const T*>
                 }
                 this->swap(tmp_v);
             }
-            iterator insert( const_iterator pos, const T& value )
+            iterator insert(iterator pos, const T& value )
             {
                 if(this->__size_ + 1 <= this->__capacity_)
                 {
-                    const_iterator it = end();
-                    vector tmp(pos, it);
-                    this->resize(this->__size_ - tmp.size());
-                    this->push_back(value);
-                    for(size_type i = 0; i < tmp.size(); ++i)
-                        this->push_back(tmp[i]);
-                    return (this->end() - tmp.size() - 1);
+                    iterator tmp = end();
+                    size_t i = size();
+                    for(iterator it = end(); tmp != pos; --it, --i)
+                    {
+                        if(i != size())
+                            __alloc.destroy(this->v_ptr + i);
+                        __alloc.construct(this->v_ptr + i, *(--tmp));
+                    }
+                    this->__size_++;
+                    *pos = value;
+                    return (pos);
                 }
                 vector tmp_v;
                 iterator first = begin();

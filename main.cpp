@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/01/23 12:39:22 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/01/23 18:10:36 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,35 @@
     int _ratio = 10000;
 
 
+// void f(ft::vector<int> vector)
+// {
+//     std::vector<int> v;
+//     vector.assign(2600 * _ratio, 1);
+//     v.push_back(*(vector.insert(vector.end() - 800 * _ratio, 44)));
+//     v.push_back(vector.size());
+//     v.push_back(vector.capacity());
+//     std::cout << v.size() << std::endl;
+//     std::cout << v.capacity() << std::endl;
+// }
 
+int main()
+{
+    ft::vector<std::string> v;
+    v.reserve(100);
+    v.push_back("A");
+    v.push_back("B");
+    v.push_back("C");
+    v.push_back("D");
+    // [A][B][C][D][end]
+    //               ^
+    v.insert(v.begin() + 1, 3, "E");
+    for(size_t i = 0; i < v.size(); ++i)
+        std::cout << v[i] <<  std::endl;
+    std::cout << v.size() << std::endl;
+    std::cout << v.capacity() << std::endl;
+}
+
+/*
 int main()
 {
 
@@ -72,26 +100,23 @@ int main()
     };                                                                                             \
     (void)s_string;                                                                                \
     (void)b_string;
-    {
-        ft::vector<std::string> v;
-        ft::vector<std::string>::iterator it = v.insert(v.end(), b_string[54]);//we insert a element in  a empty vector so the size and capcity will equal to 1
-        it = v.insert(v.end(), b_string[23]);
-        //then we insert a secon element in the end of the vector the capacity is not enough so we need to add more capacity so it will equal to 2 because we double it as like vector behavior do
-        it = v.insert(v.begin(), b_string[0]);
-        // next we add an element to the begin and the capacity is less to so we need to extend it so 3 < capacity * 2 the capacity will equal to 4
-        // size = 3 && capacity = 4 -> resize = size - distance .. resize = 2 // [1]*[2][3]
-        it = v.insert(v.begin() + 1, b_string[0]);
-        // add an other element so the capacity it enough to add it the element will insert normali in the original vector with out any change in the capacity 
-        std::cout << v.size() << std::endl;
-        std::cout << v.capacity() << std::endl;
-        std::cout << "------------------------------------------" << std::endl;
-        std::vector<std::string> v2;
-        std::vector<std::string>::iterator it2 = v2.insert(v2.end(), b_string[54]);
-        it2 = v2.insert(v2.end(), b_string[23]);
-        it2 = v2.insert(v2.begin(), b_string[0]);
-        it2 = v2.insert(v2.begin() + 1, b_string[0]);
-        std::cout << v2.size() << std::endl;
-        std::cout << v2.capacity() << std::endl;
-        
-    }
+    ft::vector<std::string> v;
+    ft::vector<std::string>::iterator it = v.insert(v.end(), b_string[54]);
+    it = v.insert(v.end(), b_string[23]);
+    std::cout << *it << std::endl;
+    it = v.insert(v.begin(), b_string[19]);
+    std::cout << *it << std::endl;
+    it = v.insert(v.begin() + 1, b_string[0]);
+    std::cout << *it << std::endl;
+    std::cout << v.size() << std::endl;
+    std::cout << v.capacity() << std::endl;
+    for(size_t i = 0; i < v.size(); ++i)
+        std::cout << v[i] << std::endl;
+    //[A]{F}[B][C][D][ ]
+    //                ^
+    //               end()
+    // size = 4
+    
+    
 }
+*/
