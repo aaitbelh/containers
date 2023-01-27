@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_VECTOR_HPP
-#define FT_VECTOR_HPP
+#ifndef FT_vector_HPP
+#define FT_vector_HPP
 #include <memory>
 #include <iostream>
 #include  <stdexcept>
@@ -547,7 +547,7 @@ struct iterator_traits<const T*>
                     this->swap(Svect);
                 }
             }
-            bool empty() { return (this->__size_ > 0 ? 0 : 1); }
+            bool empty() const { return (this->__size_ > 0 ? 0 : 1); }
             void clear() 
             {
                 for(size_type i = 0; i < this->__size_; ++i)
@@ -717,8 +717,8 @@ struct iterator_traits<const T*>
     {
         return !(lhs < rhs);
     }
-    template <class T>
-    void swap(ft::vector<T> &x, ft::vector<T> &y)
+    template <class T, class Allocator>
+    void swap(vector<T,Allocator>& x, vector<T,Allocator>& y)
     {
         x.swap(y);
     }
