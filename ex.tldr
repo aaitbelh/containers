@@ -1,0 +1,31 @@
+{
+  "document": {
+    "id": "doc",
+    "name": "New Document",
+    "version": 15.5,
+    "pages": {
+      "page": {
+        "id": "page",
+        "name": "Page 1",
+        "childIndex": 1,
+        "shapes": {},
+        "bindings": {}
+      }
+    },
+    "pageStates": {
+      "page": {
+        "id": "page",
+        "selectedIds": [],
+        "camera": {
+          "point": [
+            397.92,
+            560.42
+          ],
+          "zoom": 0.5
+        }
+      }
+    },
+    "assets": {}
+  },
+  "assets": {}
+}

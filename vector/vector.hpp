@@ -17,212 +17,9 @@
 #include  <stdexcept>
 #include <type_traits>
 #include <algorithm>
+#include "../iterators/iterators.hpp"
 namespace ft
 {
-template<class Inputiterator>
-Inputiterator operator+(const size_t n, Inputiterator &obj) {
-    return obj + n;
-}
-template <class T, class U>
-struct is_same
-{
-    const static bool value = false;
-};
-template <class T>
-struct is_same<T, T>{
-    const static bool value = true;
-};
-
-template<bool Cond, class T = void> struct enable_if {};
-template<class T> struct enable_if<true, T> { typedef T type; };
-template<class Iterator>
-struct iterator_traits
-{
-    typedef typename Iterator::difference_type difference_type;
-    typedef typename Iterator::value_type value_type;
-    typedef typename Iterator::pointer pointer;
-    typedef typename Iterator::reference reference;
-    typedef typename Iterator::iterator_category iterator_category;
-};
-
-template<class T>
-struct iterator_traits<T*>
-{
-    typedef std::ptrdiff_t difference_type;
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
-    typedef std::random_access_iterator_tag iterator_category;
-};
-template< class T >
-struct iterator_traits<const T*>
-{
-    typedef std::ptrdiff_t difference_type;
-    typedef T value_type;
-    typedef T* pointer;
-    typedef T& reference;
-    typedef std::random_access_iterator_tag iterator_category;
-};
-    //---------------------------------------iterator-----
-    template <class _TYPE>
-    class iterator
-    {
-        public:
-            typedef _TYPE 		                                                    iterator_type;
-            typedef typename ft::iterator_traits<iterator_type>::iterator_category iterator_category;
-            typedef typename ft::iterator_traits<iterator_type>::value_type        value_type;
-            typedef typename ft::iterator_traits<iterator_type>::difference_type   difference_type;
-            typedef typename ft::iterator_traits<iterator_type>::pointer           pointer;
-            typedef typename ft::iterator_traits<iterator_type>::reference         reference;
-			pointer																	it_ptr;
-            iterator operator++(int){ iterator tmp(*this); this->it_ptr++; return (tmp); }
-            iterator& operator++() { this->it_ptr++; return (*this); }
-            iterator operator--(int){ iterator tmp(*this); this->it_ptr--; return (tmp); }
-            iterator& operator--() { this->it_ptr--; return (*this); }
-            iterator& operator+=(std::ptrdiff_t n) { this->it_ptr += n; return (*this); }
-            iterator& operator-=(std::ptrdiff_t n) { this->it_ptr -= n; return (*this); }
-            iterator(){}
-            iterator(const pointer &obj)
-            {
-                this->it_ptr = obj;
-            }
-			template<class P>
-            iterator(const iterator<P> &obj)
-            {
-                *this = obj;
-            }
-            template<class P>
-			iterator& operator=(const iterator<P> &obj)
-			{
-				if(this->it_ptr != obj.it_ptr)
-					this->it_ptr = obj.it_ptr;
-				return *this;
-			}
-            reference operator[](std::ptrdiff_t index)
-            {
-                return (this->it_ptr[index]);
-            }
-            pointer operator->()
-            {
-                return (this->it_ptr);
-            }
-            reference operator*()
-            {
-                return *it_ptr;
-            }
-            iterator operator+(long n)
-            {
-                iterator tmp = *this;
-                tmp.it_ptr+=n;
-                return tmp;
-            }
-            iterator operator-(long n)
-            {
-                iterator tmp = *this;
-                tmp.it_ptr-=n;
-                return tmp;
-            }
-            long operator-(const iterator &obj)const
-            {
-                return (this->it_ptr - obj.it_ptr);
-            }
-            iterator_type base() const
-            {
-                return (it_ptr);
-            }
-            template<class P>
-            bool operator==(const iterator<P>& obj)const { return (this->it_ptr == obj.it_ptr ? 1 : 0); }
-            template<class P>
-            bool operator!=(const iterator<P>& obj)const { return (this->it_ptr != obj.it_ptr ? 1 : 0); }
-            template<class P>
-            bool operator>(const iterator<P> &obj)const{ return (this->it_ptr > obj.it_ptr ? 1 : 0); }
-            template<class P>
-            bool operator<(const iterator<P>& obj)const{ return (this->it_ptr < obj.it_ptr ? 1 : 0); }
-            template<class P>
-            bool operator>=(const iterator<P>& obj)const { return (this->it_ptr >= obj.it_ptr ? 1 : 0); }
-            template<class P>
-            bool operator<=(const iterator<P>& obj)const { return (this->it_ptr <= obj.it_ptr ? 1 : 0); }
-    };
-    //----------------------------ƒ
-    template <class _TYPE>
-    class reverse_iterator
-    {
-        public:
-            typedef _TYPE 		                                                    iterator_type;
-            typedef typename ft::iterator_traits<iterator_type>::iterator_category iterator_category;
-            typedef typename ft::iterator_traits<iterator_type>::value_type        value_type;
-            typedef typename ft::iterator_traits<iterator_type>::difference_type   difference_type;
-            typedef typename ft::iterator_traits<iterator_type>::pointer           pointer;
-            typedef typename ft::iterator_traits<iterator_type>::reference         reference;
-			iterator_type														    it_ptr;
-            reverse_iterator operator++(int){ reverse_iterator tmp(*this); this->it_ptr--; return (tmp); }
-            reverse_iterator& operator++() { this->it_ptr--; return (*this); }
-            reverse_iterator operator--(int){ reverse_iterator tmp(*this); this->it_ptr++; return (tmp); }
-            reverse_iterator& operator--() { this->it_ptr++; return (*this); }
-            reverse_iterator& operator+=(std::ptrdiff_t n) { this->it_ptr -= n; return (*this); }
-            reverse_iterator& operator-=(std::ptrdiff_t n) { this->it_ptr += n; return (*this); }
-			reverse_iterator():it_ptr(NULL){}
-            explicit reverse_iterator(iterator_type x) : it_ptr(x)
-            {
-            }
-            template< class U >
-            reverse_iterator( const reverse_iterator<U>& other )
-            {
-                if(this->it_ptr != other.it_ptr)
-                    this->it_ptr  = other.base();
-            }
-
-            template< class U >
-            reverse_iterator& operator=( const reverse_iterator<U>& other )
-            {
-                this->it_ptr = other.base();
-                return *this;
-            }
-
-            pointer operator->()
-            {
-                return &(this->operator*());
-            }
-            reference operator*() const
-            {
-                iterator_type tmp = it_ptr;
-                return *(--tmp);
-            }
-            reference operator[](std::ptrdiff_t index)
-            {
-                return (*(this->it_ptr - index -1));
-            }
-            reverse_iterator operator+(size_t n)
-            {
-
-                return (reverse_iterator(this->it_ptr - n));
-            }
-            reverse_iterator operator-(size_t n)
-            {
-                return (reverse_iterator(this->it_ptr + n));
-            }
-            long operator-(const reverse_iterator &obj)const
-            {
-                return (obj.it_ptr - this->it_ptr);
-            }
-            iterator_type base()const
-            {
-                return (it_ptr);
-            }
-            template<class p>
-            bool operator==(const reverse_iterator<p>& obj) { return (this->it_ptr == obj.it_ptr ? 1 : 0); }
-            template<class p>
-            bool operator!=(const reverse_iterator<p>& obj) { return (this->it_ptr != obj.it_ptr ? 1 : 0); }
-            template<class p>
-            bool operator>(const reverse_iterator<p>& obj) { return (this->it_ptr < obj.it_ptr ? 1 : 0); }
-            template<class p>
-            bool operator<(const reverse_iterator<p>& obj) { return (this->it_ptr > obj.it_ptr ? 1 : 0); }
-            template<class p>
-            bool operator>=(const reverse_iterator<p>& obj) { return (this->it_ptr <= obj.it_ptr ? 1 : 0); }
-            template<class p>
-            bool operator<=(const reverse_iterator<p>& obj) { return (this->it_ptr >= obj.it_ptr ? 1 : 0); }
-
-    };
     template <class T, class Allocator = std::allocator<T> >
     class vector
     {
@@ -247,9 +44,9 @@ struct iterator_traits<const T*>
                     __alloc.construct(this->v_ptr + i, val);
             }
 			template<class InputIterator>
-			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type(), typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL)
+			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type(), typename std::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL)
 			{
-                if(ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
+                if(!ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
                 {
                     vector tmp_v;
                     for(;first != last; ++first)
@@ -302,7 +99,7 @@ struct iterator_traits<const T*>
             reverse_iterator rbegin()const
             {
                 reverse_iterator tmp;
-                tmp.it_ptr = v_ptr + __size_ - 1;
+                tmp.it_ptr = v_ptr + __size_;
                 return (tmp);
             }
             reverse_iterator rend()const
@@ -337,10 +134,24 @@ struct iterator_traits<const T*>
                 other.__size_ = tmp_size;
                 other.__capacity_ = tmp_capacity;
             }
-            template <class InputIterator>  
-            void assign (InputIterator first, InputIterator last  ,typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
+            void assign(size_t n, const value_type &val)
             {
-                if(!ft::is_same<ft::iterator_traits<InputIterator>, std::input_iterator_tag>::value)
+                this->clear();
+                if(n < this->__capacity_)
+                {
+                    for(this->__size_ = 0; this->__size_ < n; ++__size_)
+                        __alloc.construct(v_ptr + __size_, val);
+                }
+                else
+                {
+                    vector Svect(n, val);
+                    this->swap(Svect);
+                }
+            }
+            template <class InputIterator> 
+            void assign (InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
+            {
+                if(!ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
                 {
                     this->clear();
                     size_type tmp_size = std::distance(first, last);
@@ -379,7 +190,7 @@ struct iterator_traits<const T*>
                 }
             }
             template <class InputIterator>    
-            void insert (iterator position, InputIterator first, InputIterator last, typename std::enable_if<!std::is_integral<InputIterator>::value>::type* = 0)
+            void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
             {
                 if(!ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
                 {
@@ -533,20 +344,6 @@ struct iterator_traits<const T*>
                 __alloc.destroy(this->v_ptr + __size_);
                 return tmp_one;
             }
-            void assign(size_t n, const value_type &val)
-            {
-                this->clear();
-                if(n < this->__capacity_)
-                {
-                    for(this->__size_ = 0; this->__size_ < n; ++__size_)
-                        __alloc.construct(v_ptr + __size_, val);
-                }
-                else
-                {
-                    vector Svect(n, val);
-                    this->swap(Svect);
-                }
-            }
             bool empty() const { return (this->__size_ > 0 ? 0 : 1); }
             void clear() 
             {
@@ -687,6 +484,21 @@ struct iterator_traits<const T*>
             allocator_type													__alloc;
             pointer															v_ptr;
     };
+
+    template<class InputIt1, class InputIt2>
+    bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
+                                InputIt2 first2, InputIt2 last2)
+    {
+        for (; (first1 != last1) && (first2 != last2); ++first1, ++first2)
+        {
+            if (*first1 < *first2)
+                return true;
+            if (*first2 < *first1)
+                return false;
+        }
+    
+        return (first1 == last1) && (first2 != last2);
+    }
     template<class T, class _Allocator>
     bool operator==(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {
@@ -700,7 +512,7 @@ struct iterator_traits<const T*>
     template<class T, class _Allocator>
     bool operator<(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {
-        return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+        return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
     template<class T, class _Allocator>
     bool operator>(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)

@@ -6,29 +6,27 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/01/26 18:53:23 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/02/07 20:01:52 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <vector>
+#include <map>
 #include <iostream>
-#include <sstream>
-#include <memory>
-#include <stack>
-#include <typeinfo>
-#include <iterator>
-#include <limits>
 #include "vector/vector.hpp"
-#include "stack/stack.hpp"
-#include <algorithm>
-#include <iterator>
-#include <cmath>
-#include <stack>
-
+#include <vector>
+#include <sstream>
+#include <istream>
+#include <map>
+#include "map/redblack_tree.hpp"
+#include "fancy_tree/src/fancy_tree.hpp"
 int main()
 {
-
-    int a = 1;
-    int &a2 = a;
-    std::cout << a2 << std::endl;
+    RedBlack_tree<int> RBtree;
+    RBtree.insert_newval(1);   
+    RBtree.insert_newval(2);   
+    RBtree.insert_newval(3);
+    RBtree.insert_newval(3);
+    // std::cout << RBtree.root->value << std::endl;
+    fancy_tree<int> tree;
+    tree.print_tree(RBtree.root, V_VIEW);
 }

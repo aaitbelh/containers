@@ -3,7 +3,7 @@ NAME=a.out
 SRCS= main.cpp
 OBJS=$(SRCS:.cpp=.o)
 CXX=clang++ -g
-CXXFLAGS= -std=c++98 -fsanitize=address 
+CXXFLAGS= -std=c++98 -Wall -Werror -Wextra
 HEADER=vector.hpp
 
 all: $(NAME)
