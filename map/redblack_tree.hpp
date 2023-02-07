@@ -137,7 +137,11 @@ class RedBlack_tree
             while(temp != NIL)
             {
                 if(temp->value == value)
+                {
+                    alloc.destroy(new_node);
+                    alloc.deallocate(new_node, 1);
                     return ;
+                }
                 if(temp->value > value)
                 {
                     if(temp->left == NIL)
@@ -160,6 +164,12 @@ class RedBlack_tree
                 }
             }
             insert_fixup(new_node);
+            this->size++;
+        }
+        ~RedBlack_tree()
+        {
+            if(root != NIL)
+                alloc.deallocate(root, size);
         }
 };
 #endif
