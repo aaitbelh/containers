@@ -69,7 +69,7 @@ class RedBlack_tree
         }
         void insert_fixup(Node<T> *new_node)
         {
-            while (new_node != NIL && new_node->parent->color == RED)
+            while (new_node->parent->color == RED)
             {
                 if (new_node->parent == new_node->parent->parent->left)
                 {
@@ -165,6 +165,73 @@ class RedBlack_tree
             }
             insert_fixup(new_node);
             this->size++;
+        }
+        Node<T> *Minimum()
+        {
+            Node<T> *tmp = root;
+            while(tmp->left != NIL);
+                tmp = tmp->left;
+            return x;
+        }
+        void transplant(Node<T> *u, Node<T> *v)
+        {
+            if(u->parent == NIL)
+                root = v;
+            else if(u == u->parent->left)
+                u->parent->left = v;
+            else
+                u->parent->right = v;
+            v->parent = u->parent;
+        }
+        Node<T> *find_theNodeval(const T& value)
+        {
+            Node<T>* tmp = root;
+            while(tmp != NIL)
+            {
+                if(tmp->value == value)
+                    return tmp;
+                if(val > tmp->value)
+                    tmp = tmp->right;
+                else
+                    tmp = tmp->left;
+            }
+            return NIL;
+        }
+        void delete_fixup(Node<T> * x)
+        void Deletion(const T& value)
+        {
+            Node<T> *y = find_theNodeval();
+            if(y == NIL)
+                return ;
+            int color, y_original_color = y->color;
+            if(y->left == NIL)
+            {
+                transplant(z, z->right)
+            }
+            else if(y->right == NIL)
+            {
+                transplant(z, z->left);
+            }
+            else
+            {
+                y = Minimum(y->right);
+                y_original_color = y->color;
+                x = y->right;
+                if(y->parent == z)
+                    x->parent = y;
+                else
+                {
+                    transplant(y, y->right);
+                    y->right = z->right;
+                    y->right->parent = y;
+                }
+                transplant(z, y);
+                y->left = z->left;
+                y->left->parent = y;
+                y->color = z->color;
+            }
+            if(y_original_color == BLACK)
+                delete_fixup(x);
         }
         ~RedBlack_tree()
         {
