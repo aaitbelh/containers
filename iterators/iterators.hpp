@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 17:27:39 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/02/04 22:34:56 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/02/19 10:50:17 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 namespace ft
 {
 
-// implement my own is_integral
 template <class T>
 struct is_integral
 {
@@ -122,7 +121,6 @@ template <class T>
 struct is_same<T, T>{
     const static bool value = true;
 };
-
 template<bool Cond, class T = void> struct enable_if {};
 template<class T> struct enable_if<true, T> { typedef T type; };
 template<class Iterator>
@@ -234,7 +232,7 @@ struct iterator_traits<const T*>
             template<class P>
             bool operator<=(const iterator<P>& obj)const { return (this->it_ptr <= obj.it_ptr ? 1 : 0); }
     };
-    //----------------------------ƒ
+    //---------------------------------------reverse_iterator-----
     template <class _TYPE>
     class reverse_iterator
     {
@@ -314,5 +312,12 @@ struct iterator_traits<const T*>
             bool operator<=(const reverse_iterator<p>& obj) { return (this->it_ptr >= obj.it_ptr ? 1 : 0); }
 
     };
+    //---------------------------------bideractional_iterator
+    // template <class T>
+    // class bideractional_iterator
+    // {
+    //     public:
+            
+    // }
 };
 #endif

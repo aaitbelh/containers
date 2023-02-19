@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redblack_tree.hpp                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/18 11:03:45 by aaitbelh          #+#    #+#             */
+/*   Updated: 2023/02/19 09:50:52 by aaitbelh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef REDBLACK_TREE_HPP
 #define REDBLACK_TREE_HPP
 #define BLACK 1
@@ -166,11 +178,10 @@ class RedBlack_tree
             insert_fixup(new_node);
             this->size++;
         }
-        Node<T> *Minimum()
+        Node<T> *Minimum(Node<T> *x)
         {
-            Node<T> *tmp = root;
-            while(tmp->left != NIL);
-                tmp = tmp->left;
+            while(x->left != NIL)
+                x = x->left;
             return x;
         }
         void transplant(Node<T> *u, Node<T> *v)
@@ -181,7 +192,7 @@ class RedBlack_tree
                 u->parent->left = v;
             else
                 u->parent->right = v;
-            v->parent = u->parent;
+            v->parent = u->parent; 
         }
         Node<T> *find_theNodeval(const T& value)
         {
@@ -190,7 +201,7 @@ class RedBlack_tree
             {
                 if(tmp->value == value)
                     return tmp;
-                if(val > tmp->value)
+                if(value > tmp->value)
                     tmp = tmp->right;
                 else
                     tmp = tmp->left;
@@ -198,36 +209,91 @@ class RedBlack_tree
             return NIL;
         }
         void delete_fixup(Node<T> * x)
+        {
+            while(x != root && x->color == BLACK) {
+                if(x == x->parent->left) {
+                    Node<T> *w = x->parent->right;
+                    if(w->color == RED) {
+                        w->color = BLACK;
+                        x->parent->color = RED;
+                        left_rotation(x->parent);
+                        w = x->parent->right;
+                    }
+                    if(w->left->color == BLACK && w->right->color == BLACK) {
+                        w->color = RED;
+                        x = x->parent;
+                    }
+                    else {
+                        if(w->right->color == BLACK) {
+                            w->left->color = BLACK;
+                            w->color = RED;
+                            right_rotation(w);
+                            w = x->parent->right;
+                        }
+                        w->color = x->parent->color;
+                        x->parent->color = BLACK;
+                        w->right->color = BLACK;
+                        left_rotation(x->parent);
+                        x = root;
+                    }
+                }
+                else {
+                    Node<T> *w = x->parent->left;
+                    if(w->color == RED) {
+                        w->color = BLACK;
+                        x->parent->color = RED;
+                        right_rotation(x->parent);
+                        w = x->parent->left;
+                    }
+                    if(w->right->color == BLACK && w->left->color == BLACK) {
+                        w->color = RED;
+                        x = x->parent;
+                    }
+                    else {
+                        if(w->left->color == BLACK) {
+                            w->right->color = BLACK;
+                            w->color = RED;
+                            left_rotation(w);
+                            w = x->parent->left;
+                        }
+                        w->color = x->parent->color;
+                        x->parent->color = BLACK;
+                        w->left->color = BLACK;
+                        right_rotation(x->parent);
+                        x = root;
+                    }
+                }
+                }
+                x->color = BLACK;
+        }
         void Deletion(const T& value)
         {
-            Node<T> *y = find_theNodeval();
+            Node<T> *y = find_theNodeval(value);
+            Node<T> *z = y;
+            Node<T> *x = y;
             if(y == NIL)
                 return ;
-            int color, y_original_color = y->color;
+            int y_original_color = y->color;
             if(y->left == NIL)
             {
-                transplant(z, z->right)
+                x = y->right;
+                transplant(y, y->right);
             }
             else if(y->right == NIL)
             {
-                transplant(z, z->left);
+                x = y->left;
+                transplant(y, y->left);
             }
             else
             {
-                y = Minimum(y->right);
+                y = Minimum(x->right);
                 y_original_color = y->color;
                 x = y->right;
-                if(y->parent == z)
-                    x->parent = y;
-                else
-                {
+                if(y != z->right)
                     transplant(y, y->right);
-                    y->right = z->right;
-                    y->right->parent = y;
-                }
+                else
+                    x->parent = y;
                 transplant(z, y);
-                y->left = z->left;
-                y->left->parent = y;
                 y->color = z->color;
             }
             if(y_original_color == BLACK)
