@@ -75,6 +75,7 @@
         "*.ipp": "cpp",
         "filesystem": "cpp",
         "fstream": "cpp",
-        "csignal": "cpp"
+        "csignal": "cpp",
+        "__memory": "cpp"
     }
 }

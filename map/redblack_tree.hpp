@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:03:45 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/02/19 09:50:52 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/02/26 13:03:31 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,32 +20,70 @@
 #include <utility>
 #define REDC "\033[1;31m"
 #define RESET "\033[0m"
-template<class T>
-struct Node
+template <class T>
+class Node
 {
+    public:
     Node *left;
     Node *right;
     Node *parent;
     T value;
     bool color; //zero for red, one for black
+    Node(const T& value) : value(value)
+    {
+        left = NULL;
+        right = NULL;
+        parent = NULL;
+        this->color = RED;
+    }
+    
+    Node(const Node& Other):value(Other.value)
+    {
+        *this = Other;
+    }
+    Node& operator=(const Node &Other)
+    {
+        this->left = Other.left;
+        this->right =  Other.right;
+        this->parent  = Other.parent;
+        this->color = Other.color;
+        return *this;
+    }
+    ~Node(){}
 };
-template <class T, class Allocator = std::allocator<Node<T> > >
+template <class T, class Key ,class Compare = std::less<Key>, class Allocator = std::allocator<Node<T> > >
 class RedBlack_tree
 {
     private:
-        size_t size;
+        size_t __size;
         Allocator alloc;
+        Compare comp;
     public:
         Node<T> *NIL;
         Node<T> *root;
-        RedBlack_tree() {
-            NIL = alloc.allocate(1);
-            NIL->value = 0;
+        RedBlack_tree(const Allocator& alloc, const Compare& comp = std::less<T>()): alloc(alloc), comp(comp), NIL(this->alloc.allocate(1)) {
             NIL->color = BLACK;
-            NIL->right = nullptr;
-            NIL->left = nullptr;
+            NIL->right = NIL;
+            NIL->left = NIL;
             root = NIL;
-            size = 0;
+            __size = 0;
+        }
+        void free_tree(Node<T> * node){
+            if (node != NIL) {
+                free_tree(node->right);
+                free_tree(node->left);
+                free(node);
+            }
+        }
+
+        void clear()
+        {
+            free_tree(this->root);
+            this->__size = 0;
+        }
+        size_t size() const
+        {
+            return this->__size;
         }
         void left_rotation(Node<T>* x)
         {
@@ -130,31 +168,22 @@ class RedBlack_tree
             }
             root->color = BLACK;
         }
-        void insert_newval(const T& value)
+        Node<T>* insert_newval(Node<T>* new_node)
         {
-            Node<T> *new_node;
-            new_node = alloc.allocate(1);
-            new_node->value = value;
-            new_node->left = NIL;
-            new_node->right = NIL;
-            new_node->color = RED;
             if(root == NIL)
             {
                 root = new_node;
                 root->color = 1;
                 root->parent = NIL;
-                return;
+                __size++;
+                return new_node;
             }
             Node<T> *temp = root;
             while(temp != NIL)
             {
-                if(temp->value == value)
-                {
-                    alloc.destroy(new_node);
-                    alloc.deallocate(new_node, 1);
-                    return ;
-                }
-                if(temp->value > value)
+                if(temp->value.first == new_node->value.first)
+                    return temp;
+                if(comp(new_node->value.first, temp->value.first))
                 {
                     if(temp->left == NIL)
                     {
@@ -176,12 +205,23 @@ class RedBlack_tree
                 }
             }
             insert_fixup(new_node);
-            this->size++;
+            this->__size++;
+            return new_node;
         }
-        Node<T> *Minimum(Node<T> *x)
+        Node<T> *Minimum(Node<T> *x) const 
         {
             while(x->left != NIL)
+            {
                 x = x->left;
+            }
+            return x;
+        }
+        Node<T> *Maximum(Node<T> *x) const 
+        {
+            while(x->right != NIL)
+            {
+                x = x->right;
+            }
             return x;
         }
         void transplant(Node<T> *u, Node<T> *v)
@@ -194,17 +234,17 @@ class RedBlack_tree
                 u->parent->right = v;
             v->parent = u->parent; 
         }
-        Node<T> *find_theNodeval(const T& value)
+        Node<T> *find_theNodeval(const Key& k)const
         {
             Node<T>* tmp = root;
             while(tmp != NIL)
             {
-                if(tmp->value == value)
+                if(k == tmp->value.first)
                     return tmp;
-                if(value > tmp->value)
-                    tmp = tmp->right;
-                else
+                if(comp(k, tmp->value.first))
                     tmp = tmp->left;
+                else
+                    tmp = tmp->right;
             }
             return NIL;
         }
@@ -266,9 +306,9 @@ class RedBlack_tree
                 }
                 x->color = BLACK;
         }
-        void Deletion(const T& value)
+        void Deletion(Node<T> *nodeToDelete)
         {
-            Node<T> *y = find_theNodeval(value);
+            Node<T> *y = find_theNodeval(nodeToDelete->value.first);
             Node<T> *z = y;
             Node<T> *x = y;
             if(y == NIL)
@@ -298,11 +338,18 @@ class RedBlack_tree
             }
             if(y_original_color == BLACK)
                 delete_fixup(x);
+            alloc.destroy(nodeToDelete);
+            alloc.deallocate(nodeToDelete, 1);
+            this->__size--;
+            
+        }
+        void setSize(size_t n)
+        {
+            this->__size = n;
         }
         ~RedBlack_tree()
         {
-            if(root != NIL)
-                alloc.deallocate(root, size);
+            alloc.deallocate(NIL, 1);
         }
 };
 #endif
