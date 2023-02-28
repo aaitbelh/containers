@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:03:45 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/02/26 13:03:31 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/02/28 21:03:31 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,13 @@ class Node
         parent = NULL;
         this->color = RED;
     }
-    
+    Node(): value()
+    {
+        left = NULL;
+        right = NULL;
+        parent = NULL;
+        this->color = RED;
+    }
     Node(const Node& Other):value(Other.value)
     {
         *this = Other;
@@ -62,25 +68,14 @@ class RedBlack_tree
         Node<T> *NIL;
         Node<T> *root;
         RedBlack_tree(const Allocator& alloc, const Compare& comp = std::less<T>()): alloc(alloc), comp(comp), NIL(this->alloc.allocate(1)) {
+            this->alloc.construct(NIL, Node<T>());
             NIL->color = BLACK;
-            NIL->right = NIL;
-            NIL->left = NIL;
+            NIL->right = NULL;
+            NIL->left = NULL;
             root = NIL;
             __size = 0;
         }
-        void free_tree(Node<T> * node){
-            if (node != NIL) {
-                free_tree(node->right);
-                free_tree(node->left);
-                free(node);
-            }
-        }
 
-        void clear()
-        {
-            free_tree(this->root);
-            this->__size = 0;
-        }
         size_t size() const
         {
             return this->__size;
@@ -170,11 +165,10 @@ class RedBlack_tree
         }
         Node<T>* insert_newval(Node<T>* new_node)
         {
-            if(root == NIL)
+            if(!__size)
             {
                 root = new_node;
                 root->color = 1;
-                root->parent = NIL;
                 __size++;
                 return new_node;
             }
@@ -206,11 +200,12 @@ class RedBlack_tree
             }
             insert_fixup(new_node);
             this->__size++;
+            NIL->parent = this->Maximum(root);
             return new_node;
         }
         Node<T> *Minimum(Node<T> *x) const 
         {
-            while(x->left != NIL)
+            while(x != NIL && x->left != NIL)
             {
                 x = x->left;
             }
@@ -218,7 +213,7 @@ class RedBlack_tree
         }
         Node<T> *Maximum(Node<T> *x) const 
         {
-            while(x->right != NIL)
+            while(x != NIL && x->right != NIL)
             {
                 x = x->right;
             }
@@ -248,7 +243,7 @@ class RedBlack_tree
             }
             return NIL;
         }
-        void delete_fixup(Node<T> * x)
+        void delete_fixup(Node<T> *x)
         {
             while(x != root && x->color == BLACK) {
                 if(x == x->parent->left) {
@@ -308,8 +303,7 @@ class RedBlack_tree
         }
         void Deletion(Node<T> *nodeToDelete)
         {
-            Node<T> *y = find_theNodeval(nodeToDelete->value.first);
-            Node<T> *z = y;
+            Node<T> *y = nodeToDelete;
             Node<T> *x = y;
             if(y == NIL)
                 return ;
@@ -326,22 +320,56 @@ class RedBlack_tree
             }
             else
             {
-                y = Minimum(x->right);
+                y = Minimum(y->right);
                 y_original_color = y->color;
                 x = y->right;
-                if(y != z->right)
-                    transplant(y, y->right);
-                else
+                if(y->parent == nodeToDelete)
                     x->parent = y;
-                transplant(z, y);
-                y->color = z->color;
+                else
+                {
+                    transplant(y, y->right);
+                    y->right = nodeToDelete->right;
+                    y->right->parent = y;
+                }
+                transplant(nodeToDelete, y);
+                y->left = nodeToDelete->left;
+                y->left->parent = y;
+                 
+                
             }
             if(y_original_color == BLACK)
                 delete_fixup(x);
             alloc.destroy(nodeToDelete);
             alloc.deallocate(nodeToDelete, 1);
+            NIL->parent = this->Maximum(root);
             this->__size--;
             
+        }
+        void free_tree(Node<T> * node){
+            if (node != NIL) {
+                free_tree(node->right);
+                free_tree(node->left);
+                alloc.destroy(node);
+                alloc.deallocate(node, 1);
+            }
+        }
+        Node<T>* upper_bound(const Key& key) const
+        {
+            Node<T>* tmp = root;
+            while(tmp != NIL)
+            {
+                if(comp(key, tmp->value.first))
+                    return tmp;
+                else
+                    tmp = tmp->right;
+            }
+            return NIL;
+        }
+        void clear()
+        {
+            free_tree(this->root);
+            root = NIL;
+            this->__size = 0;
         }
         void setSize(size_t n)
         {
@@ -349,6 +377,7 @@ class RedBlack_tree
         }
         ~RedBlack_tree()
         {
+            alloc.destroy(NIL);
             alloc.deallocate(NIL, 1);
         }
 };

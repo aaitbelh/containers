@@ -322,7 +322,7 @@ namespace ft
             {
                 size_type distance = std::distance(first, last);
                 iterator tmp = first;
-                this->__size_ -= distance;
+                this->__size_ -= distance;x
                 iterator first_it(last);
                 for(; first < end(); ++first)
                 {
