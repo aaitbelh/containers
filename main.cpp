@@ -6,28 +6,30 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:00:29 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/02/28 21:02:52 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/02 15:02:37 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <map>
 #include <iostream>
-// #include "vector/vector.hpp"
+#include "vector/vector.hpp"
 #include <vector>
 #include <sstream>
 #include <istream>
 #include <utility>
 #include "map/redblack_tree.hpp"
 #include "map/map.hpp"
-#include "fancy_tree/src/fancy_tree.hpp"
-#define NAMESPACE std
+// #include "fancy_tree/src/fancy_tree.hpp"
+#include <time.h>
+#include <random>
+#define NAMESPACE ft
 
 
 
 
 
 template <typename T>
-void init_array_int_str(NAMESPACE::pair<int, std::string>* arr, std::size_t size)
+void init_array_int_str(NAMESPACE::pair<int, std::string>* arr, std::pair<int, std::string>* arr2 ,std::size_t size)
 {
     std::string x[64] = { "CBCId4lUU6oYms60JkNr", "V5sbXjlqYRAV1C1LgJbt", "TPcK94z2htaoK5hWpR1j",
                           "WA1JMsjadjyjQjJLxVkE", "aDhJUsH7AVnKLfzQGcPC", "DPpRIm6G9C5CWSWYLwnt",
@@ -53,7 +55,9 @@ void init_array_int_str(NAMESPACE::pair<int, std::string>* arr, std::size_t size
                           "1IRLC9sfQI5AzDYeotLd" };
 
     for (std::size_t i = 0; i < size; ++i) {
-        arr[i] = NAMESPACE::make_pair(rand(), x[i]);
+        int a = rand();
+        arr[i] = NAMESPACE::make_pair(a, x[i]);
+        arr2[i] = std::make_pair(a, x[i]);
     }
 }
 template <typename T>
@@ -87,18 +91,16 @@ void init_array_str_str(NAMESPACE::pair<std::string, std::string>* arr, std::siz
         arr[i] = NAMESPACE::make_pair(x[i], y[i]);
     }
 }
-void f()
-{
-    std::size_t strstr_size = 32;  
-    (void)strstr_size; 
-    NAMESPACE::pair<int, std::string> intstr_arr[32];                                      
-    init_array_int_str<void>(intstr_arr, 32); 
-    NAMESPACE::map<int, std::string > m(intstr_arr, intstr_arr + 25);
-    NAMESPACE::map<int, std::string >::iterator it = m.begin();
-    std::advance(it, 1);
-    for(; it != m.end(); it = m.begin())
-        m.erase(it);
-}
+// void f()
+// {
+//     std::size_t strstr_size = 32;  
+//     (void)strstr_size; 
+//     NAMESPACE::map<int, std::string > m(intstr_arr, intstr_arr + 25);
+//     NAMESPACE::map<int, std::string >::iterator it = m.begin();
+//     std::advance(it, 1);
+//     for(; it != m.end(); it = m.begin())
+//         m.erase(it);
+// }
 // void SUI()
 // {
 //     NAMESPACE::pair<std::string, std::string> strstr_arr[32];                                      
@@ -108,8 +110,96 @@ void f()
 //     ++it;
 //     std::cout << it->first << std::endl;
 // }
-
+template <typename T>
+T times2(const T& x)
+{
+    return x * 2;
+}
+template <typename Iter1, typename Iter2>
+bool comparemaps(Iter1 first1, Iter1 last1, Iter2 first2, Iter2 last2)
+{
+    for (; (first1 != last1) && (first2 != last2); ++first1, ++first2)
+        if (first1->first != first2->first || first1->second != first2->second)
+            return false;
+    return true;
+}
 int main() {
-    f();
-    // system("leaks a.out");
+
+        // bool cond = false;
+        // std::map<int, std::string> m2;
+        // ft::map<int, std::string> ft_m2;
+
+        // for (size_t i = 0; i < 1e5; i++)
+        // {
+        //     m2.insert(std::make_pair(i, "string1"));
+        //     ft_m2.insert(ft::make_pair(i, "string1"));
+        // }
+
+        // std::map<int, std::string>::reverse_iterator it2 = m2.rbegin();
+        // ft::map<int, std::string>::reverse_iterator ft_it2 = ft_m2.rbegin();
+
+        // m2.erase(m2.begin());
+        // ft_m2.erase(ft_m2.begin());
+
+        // cond = cond && m2.size() == ft_m2.size() && comparemaps(m2.begin(), m2.end(), ft_m2.begin(), ft_m2.end());
+
+        // m2.erase(it2->first);
+        // ft_m2.erase(ft_it2->first);
+
+        // cond = cond && m2.size() == ft_m2.size() && comparemaps(m2.begin(), m2.end(), ft_m2.begin(), ft_m2.end());
+
+        std::map<int, std::string> m3;
+        ft::map<int, std::string> ft_m3;
+        std::vector<int> vec;
+        std::vector<int> ft_vec;
+        std::random_device randDev;
+        std::mt19937 generator(randDev());
+        std::uniform_int_distribution<int> distr(0, 15);
+        // for (size_t i = 0; i < 15; i++)
+        // {
+        //     m3.insert(std::make_pair(i, "string1"));
+        //     ft_m3.insert(ft::make_pair(i, "string1"));
+        // }
+        ft_m3.insert(ft::make_pair(0, "string1"));
+        ft_m3.insert(ft::make_pair(5, "string1"));
+        ft_m3.insert(ft::make_pair(12, "string1"));
+        ft_m3.insert(ft::make_pair(13, "string1"));
+        ft_m3.insert(ft::make_pair(14, "string1"));
+        // for (size_t i = 0; i < 15; ++i)
+        // {
+        //     int n = distr(generator);
+        //     int ret1 = m3.erase(n);
+        //     int ret2 = ft_m3.erase(n);
+        //     if (ret1 != ret2)
+        //     {
+        //         cond = false;
+        //         break;
+        //     }
+        // }
+        ft_m3.erase(13);
+        ft_m3.erase(14);
+        ft_m3.erase(0);
+        for(ft::map<int, std::string>::iterator it = ft_m3.begin(); it != ft_m3.end(); ++it)
+            std::cout << it->first << std::endl;
+        // 13
+        // 13
+        // 14
+        // 0
+        // 10
+        // -----------
+        // std::cout << "--------------------------------" << std::endl;
+        // std::cout << std::endl << std::endl << std::endl;
+        // for(ft::map<int, std::string>::iterator it = ft_m3.begin(); it != ft_m3.end(); ++it)
+        //     std::cout << it->first << std::endl;
+        // if (!m3.empty())
+        // {
+        //     m3.erase(m3.begin(), m3.end());
+        //     m3.erase(m3.begin(), m3.end());
+        // }
+        // if (!ft_m3.empty())
+        // {
+        //     ft_m3.erase(ft_m3.begin(), ft_m3.end());
+        //     ft_m3.erase(ft_m3.begin(), ft_m3.end());
+        // }
+        // cond = cond && (m3.size() == ft_m3.size() && comparemaps(m3.begin(), m3.end(), ft_m3.begin(), ft_m3.end()));
 }

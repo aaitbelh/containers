@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:04:07 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/02/18 11:04:08 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/01 19:56:58 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ namespace ft
                     const stack<T, Container>& y);
             friend bool operator<=<T, Container>(const stack<T, Container>& x,
                     const stack<T, Container>& y);
+            ~stack()
+            { }
     };
 //     template <class T, class Container>
 //     bool operator< (const stack<T, Container>& x,

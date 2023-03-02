@@ -47,7 +47,7 @@ namespace ft
 			template<class InputIterator>
 			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type(), typename std::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL)
 			{
-                if(!ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
+                if(ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
                 {
                     vector tmp_v;
                     for(;first != last; ++first)
@@ -99,14 +99,12 @@ namespace ft
             }
             reverse_iterator rbegin()const
             {
-                reverse_iterator tmp;
-                tmp.it_ptr = v_ptr + __size_;
+                reverse_iterator tmp(begin() + __size_);
                 return (tmp);
             }
             reverse_iterator rend()const
             {
-                reverse_iterator tmp;
-                tmp.it_ptr = v_ptr;
+                reverse_iterator tmp(v_ptr);
                 return (tmp);
             }
             pointer __allocate(size_t n) {return __alloc.allocate(n); }
@@ -322,7 +320,7 @@ namespace ft
             {
                 size_type distance = std::distance(first, last);
                 iterator tmp = first;
-                this->__size_ -= distance;x
+                this->__size_ -= distance;
                 iterator first_it(last);
                 for(; first < end(); ++first)
                 {
@@ -486,20 +484,6 @@ namespace ft
             pointer															v_ptr;
     };
 
-    template<class InputIt1, class InputIt2>
-    bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
-                                InputIt2 first2, InputIt2 last2)
-    {
-        for (; (first1 != last1) && (first2 != last2); ++first1, ++first2)
-        {
-            if (*first1 < *first2)
-                return true;
-            if (*first2 < *first1)
-                return false;
-        }
-    
-        return (first1 == last1) && (first2 != last2);
-    }
     template<class T, class _Allocator>
     bool operator==(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {

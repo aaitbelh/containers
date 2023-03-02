@@ -6,12 +6,12 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:03:56 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/02/28 22:45:07 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/02 12:26:21 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAP_HPP
-#define MAP_HPP
+#ifndef map_HPP
+#define map_HPP
 #include <utility>
 #include <memory>
 #include <functional>
@@ -33,27 +33,37 @@ namespace ft
         pair(const pair<U,V>& pr):first(pr.first),second(pr.second) {}
         pair& operator=(const pair& pr)
         { first = pr.first; second = pr.second; return *this; }
+          
     };
+
+    template <class T1, class T2>
+    bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    { return lhs.first==rhs.first && lhs.second==rhs.second; }
+
+    template <class T1, class T2>
+    bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    { return !(lhs==rhs); }
+
+    template <class T1, class T2>
+    bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    { return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second); }
+
+    template <class T1, class T2>
+    bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    { return !(rhs<lhs); }
+
+    template <class T1, class T2>
+    bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    { return rhs<lhs; }
+
+    template <class T1, class T2>
+    bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    { return !(lhs<rhs); }
+    
     template <class T1,class T2>
     pair<T1,T2> make_pair (T1 x, T2 y)
     {
       return ( pair<T1,T2>(x,y) );
-    };
-    template <class Key, class T, class Compare, class Alloc>
-    class value_compare : public std::binary_function<T, T,bool>
-    {
-        friend class map;
-        protected:
-        Compare comp;
-        value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
-        public:
-        typedef bool result_type;
-        typedef value_type first_argument_type;
-        typedef value_type second_argument_type;
-        bool operator() (const value_type& x, const value_type& y) const
-        {
-            return comp(x.first, y.first);
-        }
     };
     template <class Key, class T, class Compare = std::less<Key>,
                        class Allocator = std::allocator<ft::pair<const Key, T> > >
@@ -73,11 +83,25 @@ namespace ft
 			typedef typename allocator_type::difference_type		difference_type;
 			typedef typename Allocator::template rebind<Node<value_type> >::other	node_allocator;
             typedef typename ft::map_iterator<pointer>                              iterator;
-            typedef typename ft::reverse_iterartor<iterator>                        reverse_iterator;
+            typedef typename ft::reverse_iterator<iterator>                        reverse_iterator;
             typedef typename ft::map_iterator<const_pointer>                         const_iterator;
-            typedef typename ft::reverse_iterartor<const_iterator>                  const_reverse_iterator;
+            typedef typename ft::reverse_iterator<const_iterator>                  const_reverse_iterator;
             typedef Node<value_type>                                                Node;
-            typedef typename ft::value_compare<value_type, value_type, bool>                          value_compare;
+            class value_compare
+            {
+                friend class map;
+                protected:
+                Compare comp;
+                value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
+                public:
+                typedef bool result_type;
+                typedef value_type first_argument_type;
+                typedef value_type second_argument_type;
+                bool operator() (const value_type& x, const value_type& y) const
+                {
+                    return comp(x.first, y.first);
+                }
+            };
             private :
                 node_allocator            __allocNode;
                 allocator_type            __alloc;
@@ -124,7 +148,7 @@ namespace ft
                 iterator tmp(RB.NIL, RB.NIL, RB.root);
                 return reverse_iterator(tmp);
             }
-            reverse_iterator rend()
+            reverse_iterator rend()const
             {
                 reverse_iterator tmp(begin());
                 return tmp;
@@ -169,8 +193,13 @@ namespace ft
             }
             void erase (iterator first, iterator last)
             {
-                for(; first != last; ++first)
-                    erase(first);
+                iterator tmp;
+                while(first != last)
+                {
+                    tmp = first;
+                    ++first;
+                    erase(tmp);
+                }
             }
             size_type erase (const key_type& k)
             {
@@ -216,7 +245,7 @@ namespace ft
                     return 1;
                 return 0;
             }
-            size_type size()
+            size_type size()const
             {
                 return RB.size();
             }
@@ -224,7 +253,7 @@ namespace ft
             //find---------------
             iterator find( const Key& key )
             {
-                return (iterator(RB.find_theNodeval(key), RB.root, RB.NIL));
+                return (iterator(RB.find_theNodeval(key), RB.NIL, RB.root));
             }
             const_iterator find( const Key& key ) const
             {
@@ -298,20 +327,56 @@ namespace ft
             void clear(){ 
                 RB.clear();
             }
-            
+            value_compare value_comp() const
+            {
+                return value_compare(comp);
+            }
+            allocator_type get_allocator() const
+            {
+                return (this->__alloc);
+            }
             ~map()
             {
                 clear();
             }
+            
     };
-    template <class T> 
-    void swap (T& a, T& b)
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator==( const ft::map<Key, T, Compare, Alloc>& lhs,
+                 const ft::map<Key, T, Compare, Alloc>& rhs )
     {
-        T tmp = a;
-        a = b;
-        b = tmp;
+         return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin()));
     }
-
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator!=( const ft::map<Key, T, Compare, Alloc>& lhs,
+                 const ft::map<Key, T, Compare, Alloc>& rhs )
+    {
+        return !(lhs == rhs);
+    }
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator<( const ft::map<Key, T, Compare, Alloc>& lhs,
+                const ft::map<Key, T, Compare, Alloc>& rhs )
+    {
+        return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    }
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator<=( const ft::map<Key, T, Compare, Alloc>& lhs,
+                 const ft::map<Key, T, Compare, Alloc>& rhs )
+    {
+        return !(rhs < lhs);
+    }
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator>( const ft::map<Key, T, Compare, Alloc>& lhs,
+                const ft::map<Key, T, Compare, Alloc>& rhs )
+    {
+        return rhs < lhs;
+    }
+    template< class Key, class T, class Compare, class Alloc >
+    bool operator>=( const ft::map<Key, T, Compare, Alloc>& lhs,
+                 const ft::map<Key, T, Compare, Alloc>& rhs )
+    {
+        return !(lhs < rhs);
+    }
 };
 
 #endif

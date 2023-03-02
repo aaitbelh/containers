@@ -6,20 +6,18 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:03:45 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/02/28 21:03:31 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/02 14:19:04 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REDBLACK_TREE_HPP
 #define REDBLACK_TREE_HPP
 #define BLACK 1
-#define RED 0
+#define REDCOLOR 0
 
 #include <iostream>
 #include <memory>
 #include <utility>
-#define REDC "\033[1;31m"
-#define RESET "\033[0m"
 template <class T>
 class Node
 {
@@ -34,14 +32,14 @@ class Node
         left = NULL;
         right = NULL;
         parent = NULL;
-        this->color = RED;
+        this->color = REDCOLOR;
     }
     Node(): value()
     {
         left = NULL;
         right = NULL;
         parent = NULL;
-        this->color = RED;
+        this->color = REDCOLOR;
     }
     Node(const Node& Other):value(Other.value)
     {
@@ -114,16 +112,16 @@ class RedBlack_tree
         }
         void insert_fixup(Node<T> *new_node)
         {
-            while (new_node->parent->color == RED)
+            while (new_node->parent->color == REDCOLOR)
             {
                 if (new_node->parent == new_node->parent->parent->left)
                 {
                     Node<T> *y = new_node->parent->parent->right;
-                    if (y->color == RED)
+                    if (y->color == REDCOLOR)
                     {
                         new_node->parent->color = BLACK;
                         y->color = BLACK;
-                        new_node->parent->parent->color = RED;
+                        new_node->parent->parent->color = REDCOLOR;
                         new_node = new_node->parent->parent;
                     }
                     else
@@ -134,18 +132,18 @@ class RedBlack_tree
                             left_rotation(new_node);
                         }
                         new_node->parent->color = BLACK;
-                        new_node->parent->parent->color = RED;
+                        new_node->parent->parent->color = REDCOLOR;
                         right_rotation(new_node->parent->parent);
                     }
                 }
                 else
                 {
                     Node<T> *y = new_node->parent->parent->left;
-                    if (y->color == RED)
+                    if (y->color == REDCOLOR)
                     {
                         new_node->parent->color = BLACK;
                         y->color = BLACK;
-                        new_node->parent->parent->color = RED;
+                        new_node->parent->parent->color = REDCOLOR;
                         new_node = new_node->parent->parent;
                     }
                     else
@@ -156,7 +154,7 @@ class RedBlack_tree
                             right_rotation(new_node);
                         }
                         new_node->parent->color = BLACK;
-                        new_node->parent->parent->color = RED;
+                        new_node->parent->parent->color = REDCOLOR;
                         left_rotation(new_node->parent->parent);
                     }
                 }
@@ -227,7 +225,7 @@ class RedBlack_tree
                 u->parent->left = v;
             else
                 u->parent->right = v;
-            v->parent = u->parent; 
+            v->parent = u->parent;
         }
         Node<T> *find_theNodeval(const Key& k)const
         {
@@ -248,20 +246,20 @@ class RedBlack_tree
             while(x != root && x->color == BLACK) {
                 if(x == x->parent->left) {
                     Node<T> *w = x->parent->right;
-                    if(w->color == RED) {
+                    if(w->color == REDCOLOR) {
                         w->color = BLACK;
-                        x->parent->color = RED;
+                        x->parent->color = REDCOLOR;
                         left_rotation(x->parent);
                         w = x->parent->right;
                     }
                     if(w->left->color == BLACK && w->right->color == BLACK) {
-                        w->color = RED;
+                        w->color = REDCOLOR;
                         x = x->parent;
                     }
                     else {
                         if(w->right->color == BLACK) {
                             w->left->color = BLACK;
-                            w->color = RED;
+                            w->color = REDCOLOR;
                             right_rotation(w);
                             w = x->parent->right;
                         }
@@ -274,20 +272,20 @@ class RedBlack_tree
                 }
                 else {
                     Node<T> *w = x->parent->left;
-                    if(w->color == RED) {
+                    if(w->color == REDCOLOR) {
                         w->color = BLACK;
-                        x->parent->color = RED;
+                        x->parent->color = REDCOLOR;
                         right_rotation(x->parent);
                         w = x->parent->left;
                     }
                     if(w->right->color == BLACK && w->left->color == BLACK) {
-                        w->color = RED;
+                        w->color = REDCOLOR;
                         x = x->parent;
                     }
                     else {
                         if(w->left->color == BLACK) {
                             w->right->color = BLACK;
-                            w->color = RED;
+                            w->color = REDCOLOR;
                             left_rotation(w);
                             w = x->parent->left;
                         }
@@ -334,8 +332,7 @@ class RedBlack_tree
                 transplant(nodeToDelete, y);
                 y->left = nodeToDelete->left;
                 y->left->parent = y;
-                 
-                
+                y->color = nodeToDelete->color;
             }
             if(y_original_color == BLACK)
                 delete_fixup(x);
