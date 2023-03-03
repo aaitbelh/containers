@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:03:45 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/03/02 14:19:04 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/03 01:44:41 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #define REDBLACK_TREE_HPP
 #define BLACK 1
 #define REDCOLOR 0
-
 #include <iostream>
 #include <memory>
 #include <utility>
+#include "../utility/pair.hpp"
 template <class T>
 class Node
 {
@@ -55,7 +55,7 @@ class Node
     }
     ~Node(){}
 };
-template <class T, class Key ,class Compare = std::less<Key>, class Allocator = std::allocator<Node<T> > >
+template <class T, class Key , class Compare, class Allocator, class value_type>
 class RedBlack_tree
 {
     private:
@@ -168,14 +168,14 @@ class RedBlack_tree
                 root = new_node;
                 root->color = 1;
                 __size++;
+                NIL->parent = this->Maximum(root);
                 return new_node;
             }
             Node<T> *temp = root;
             while(temp != NIL)
             {
-                if(temp->value.first == new_node->value.first)
-                    return temp;
-                if(comp(new_node->value.first, temp->value.first))
+
+                if(comp(new_node->value, temp->value))
                 {
                     if(temp->left == NIL)
                     {
@@ -185,7 +185,7 @@ class RedBlack_tree
                     }
                     temp = temp->left;
                 }
-                else
+                else if(comp(temp->value, new_node->value))
                 {
                     if(temp->right == NIL)
                     {
@@ -195,6 +195,8 @@ class RedBlack_tree
                     }
                     temp = temp->right;
                 }
+                else
+                    return temp;
             }
             insert_fixup(new_node);
             this->__size++;
@@ -227,20 +229,21 @@ class RedBlack_tree
                 u->parent->right = v;
             v->parent = u->parent;
         }
-        Node<T> *find_theNodeval(const Key& k)const
+        Node<T> *find_theNodeval(const value_type& k)const
         {
             Node<T>* tmp = root;
             while(tmp != NIL)
             {
-                if(k == tmp->value.first)
-                    return tmp;
-                if(comp(k, tmp->value.first))
+                if(comp(k, tmp->value))
                     tmp = tmp->left;
-                else
+                else if(comp(tmp->value, k))
                     tmp = tmp->right;
+                else
+                    return tmp;
             }
             return NIL;
         }
+        
         void delete_fixup(Node<T> *x)
         {
             while(x != root && x->color == BLACK) {
@@ -337,7 +340,7 @@ class RedBlack_tree
             if(y_original_color == BLACK)
                 delete_fixup(x);
             alloc.destroy(nodeToDelete);
-            alloc.deallocate(nodeToDelete, 1);
+            alloc.deallocate(nodeToDelete,1);
             NIL->parent = this->Maximum(root);
             this->__size--;
             
@@ -355,7 +358,7 @@ class RedBlack_tree
             Node<T>* tmp = root;
             while(tmp != NIL)
             {
-                if(comp(key, tmp->value.first))
+                if(comp(key, tmp->value))
                     return tmp;
                 else
                     tmp = tmp->right;
@@ -371,6 +374,15 @@ class RedBlack_tree
         void setSize(size_t n)
         {
             this->__size = n;
+        }
+        Node<T>*  allocate_toNode(const value_type& val)
+        {
+            Node<T> *new_Node = alloc.allocate(1);
+            alloc.construct(new_Node, val);
+            new_Node->left = NIL;
+            new_Node->right = NIL;
+            new_Node->parent = NIL;
+            return new_Node;
         }
         ~RedBlack_tree()
         {
