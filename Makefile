@@ -1,5 +1,4 @@
 NAME=a.out
-
 SRCS= main.cpp
 OBJS=$(SRCS:.cpp=.o)
 CXX=clang++ -g3
@@ -10,12 +9,8 @@ all: $(NAME)
 
 $(NAME):$(OBJS)
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) && ./a.out
-
-# %.o:%.cpp $(HEADER)
-# 	$(CXX) $(CXXFLAGS) $(SRC) -c $<
-
 clean:
 	rm -f ${OBJS}
-fclean:
+fclean: clean
 	rm -f $(NAME)
 re : fclean clean all

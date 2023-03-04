@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:03:56 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/03/03 01:13:33 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/03 18:43:41 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,23 +297,35 @@ namespace ft
             
             iterator upper_bound( const Key& key )
             {
-                iterator it = begin();
-                for(;it != end(); ++it)
+                Node *tmp = RB.root;
+                iterator result = end();
+                while(tmp != RB.NIL)
                 {
-                    if(it->first > key)
-                        return it;
+                    if(comp(key, tmp->value.first))
+                    {
+                        result = iterator(tmp, RB.NIL, RB.root);
+                        tmp = tmp->left;
+                    }
+                    else
+                        tmp = tmp->right;
                 }
-                return (end());
+                return result;
             }
             const_iterator upper_bound (const key_type& k) const
             {
-                const_iterator it = begin();
-                for(;it != end(); ++it)
+                Node *tmp = RB.root;
+                const_iterator result = end();
+                while(tmp != RB.NIL)
                 {
-                    if(it->first > k)
-                        return it;
+                    if(comp(k, tmp->value.first))
+                    {
+                        result = const_iterator(tmp, RB.NIL, RB.root);
+                        tmp = tmp->left;
+                    }
+                    else
+                        tmp = tmp->right;
                 }
-                return (end());
+                return result;
             }
             //✧༝┉┉┉┉┉˚*❋ ❋ ❋ ❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋*˚┉┉┉┉┉༝✧
             //-------------------------
@@ -322,23 +334,37 @@ namespace ft
             
             iterator lower_bound (const key_type& k)
             {
-                iterator it = begin();
-                for(;it != end(); ++it)
+                Node *tmp = RB.root;
+                iterator result = end();
+                value_type val(k, mapped_type());
+                while(tmp != RB.NIL)
                 {
-                    if(it->first >= k)
-                        return it;
+                    if(!value_compare(comp)(tmp->value, val))
+                    {
+                        result = iterator(tmp, RB.NIL, RB.root);
+                        tmp = tmp->left;
+                    }
+                    else
+                        tmp = tmp->right;
                 }
-                return (end());
+                return result;
             }
             const_iterator lower_bound (const key_type& k) const
             {
-                const_iterator it = begin();
-                for(;it != end(); ++it)
+                Node *tmp = RB.root;
+                const_iterator result = end();
+                value_type val(k, mapped_type());
+                while(tmp != RB.NIL)
                 {
-                    if(it->first >= k)
-                        return it;
+                    if(!value_compare(comp)(tmp->value, val))
+                    {
+                        result = const_iterator(tmp, RB.NIL, RB.root);
+                        tmp = tmp->left;
+                    }
+                    else
+                        tmp = tmp->right;
                 }
-                return (end());
+                return result;
             }
             //✧༝┉┉┉┉┉˚*❋ ❋ ❋ ❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋*˚┉┉┉┉┉༝✧
             
@@ -370,9 +396,10 @@ namespace ft
             //-----------------
             void swap (map& x)
             {
-                map tmp = x;
-                x = *this;
-                *this = tmp;
+                Compare tmp_comp = x.key_comp();
+                x.comp = this->comp;
+                this->comp = tmp_comp;
+                RB.swap(x.RB);
             }
             //✧༝┉┉┉┉┉˚*❋ ❋ ❋ ❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋*˚┉┉┉┉┉༝✧
             
@@ -458,6 +485,12 @@ namespace ft
                  const ft::map<Key, T, Compare, Alloc>& rhs )
     {
         return !(lhs < rhs);
+    }
+    template< class Key, class T, class Compare, class Alloc >
+    void swap( ft::map<Key, T, Compare, Alloc>& lhs,
+           ft::map<Key, T, Compare, Alloc>& rhs )
+    {
+        lhs.swap(rhs);
     }
 };
 

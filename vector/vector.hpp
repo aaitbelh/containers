@@ -12,11 +12,7 @@
 
 #ifndef FT_vector_HPP
 #define FT_vector_HPP
-#include <memory>
-#include <iostream>
-#include  <stdexcept>
-#include <type_traits>
-#include <algorithm>
+#include "../utility/utility.hpp"
 #include "../iterators/iterators.hpp"
 
 namespace ft
@@ -45,7 +41,7 @@ namespace ft
                     __alloc.construct(this->v_ptr + i, val);
             }
 			template<class InputIterator>
-			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type(), typename std::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL)
+			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0):__capacity_(0),__size_(0),__alloc(alloc), v_ptr(NULL)
 			{
                 if(ft::is_same<typename ft::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)
                 {
@@ -487,7 +483,7 @@ namespace ft
     template<class T, class _Allocator>
     bool operator==(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs)
     {
-        return (lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin()));
+        return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
     }
     template<class T, class _Allocator>
     bool operator!=(const ft::vector<T, _Allocator> &lhs, const ft::vector<T, _Allocator> &rhs )

@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:04:07 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/03/01 19:56:58 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/03 18:54:36 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,26 +102,6 @@ namespace ft
             ~stack()
             { }
     };
-//     template <class T, class Container>
-//     bool operator< (const stack<T, Container>& x,
-//                     const stack<T, Container>& y)
-//                     { return x.c < y.c; }
-//   template <class T, class Container>
-//     bool operator!=(const stack<T, Container>& x,
-//                     const stack<T, Container>& y)
-//                     { return x.c != y.c; }
-//   template <class T, class Container>
-//     bool operator> (const stack<T, Container>& x,
-//                     const stack<T, Container>& y)
-//                     { return x.c > y.c; }
-//   template <class T, class Container>
-//     bool operator>=(const stack<T, Container>& x,
-//                     const stack<T, Container>& y)
-//                     { return x.c >= y.c; }
-//   template <class T, class Container>
-//     bool operator<=(const stack<T, Container>& x,
-//                     const stack<T, Container>& y)
-//                     { return x.c <= y.c; }
 };
 
 #endif

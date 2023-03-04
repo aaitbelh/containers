@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 16:47:30 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/03/03 01:44:41 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/03 18:45:32 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,9 +206,10 @@ namespace ft
             //-----------------
             void swap (set& x)
             {
-                set tmp = x;
-                x = *this;
-                *this = tmp;
+                Compare tmp_comp = x.key_comp();
+                x.comp = this->comp;
+                this->comp = tmp_comp;
+                RB.swap(x.RB);
             }
             //✧༝┉┉┉┉┉˚*❋ ❋ ❋ ❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋*˚┉┉┉┉┉༝✧
             void clear()
@@ -274,23 +275,35 @@ namespace ft
             //---------------------------
             iterator upper_bound( const Key& key )
             {
-                iterator it = begin();
-                for(;it != end(); ++it)
+                Node *tmp = RB.root;
+                iterator result = end();
+                while(tmp != RB.NIL)
                 {
-                    if(*it > key)
-                        return it;
+                    if(comp(key, tmp->value))
+                    {
+                        result = iterator(tmp, RB.NIL, RB.root);
+                        tmp = tmp->left;
+                    }
+                    else
+                        tmp = tmp->right;
                 }
-                return (end());
+                return result;
             }
             const_iterator upper_bound (const key_type& k) const
             {
-                const_iterator it = begin();
-                for(;it != end(); ++it)
+                Node *tmp = RB.root;
+                const_iterator result = end();
+                while(tmp != RB.NIL)
                 {
-                    if(*it> k)
-                        return it;
+                    if(comp(k, tmp->value))
+                    {
+                        result = const_iterator(tmp, RB.NIL, RB.root);
+                        tmp = tmp->left;
+                    }
+                    else
+                        tmp = tmp->right;
                 }
-                return (end());
+                return result;
             }
 
             
@@ -301,23 +314,35 @@ namespace ft
             
             iterator lower_bound (const key_type& k)
             {
-                iterator it = begin();
-                for(;it != end(); ++it)
+                Node *tmp = RB.root;
+                iterator result = end();
+                while(tmp != RB.NIL)
                 {
-                    if(*it >= k)
-                        return it;
+                    if(!value_compare(comp)(tmp->value, k))
+                    {
+                        result = iterator(tmp, RB.NIL, RB.root);
+                        tmp = tmp->left;
+                    }
+                    else
+                        tmp = tmp->right;
                 }
-                return (end());
+                return result;
             }
             const_iterator lower_bound (const key_type& k) const
             {
-                const_iterator it = begin();
-                for(;it != end(); ++it)
+                Node *tmp = RB.root;
+                const_iterator result = end();
+                while(tmp != RB.NIL)
                 {
-                    if(*it >= k)
-                        return it;
+                    if(!value_compare(comp)(tmp->value, k))
+                    {
+                        result = const_iterator(tmp, RB.NIL, RB.root);
+                        tmp = tmp->left;
+                    }
+                    else
+                        tmp = tmp->right;
                 }
-                return (end());
+                return result;
             }
             //✧༝┉┉┉┉┉˚*❋ ❋ ❋ ❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋❋ ❋ ❋*˚┉┉┉┉┉༝✧
             
@@ -402,6 +427,12 @@ namespace ft
                  const ft::set<Key, Compare, Alloc>& rhs )
     {
         return !(lhs < rhs);
+    }
+    template< class Key, class Compare, class Alloc >
+    void swap( ft::set<Key, Compare, Alloc>& lhs,
+           ft::set<Key, Compare, Alloc>& rhs )
+    {
+        lhs.swap(rhs);
     }
 };
 #endif

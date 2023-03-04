@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 17:27:39 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/03/02 15:02:16 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/03 17:41:55 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,8 @@ struct is_same<T, T>{
 };
 template<bool Cond, class T = void> struct enable_if {};
 template<class T> struct enable_if<true, T> { typedef T type; };
+
+
 template<class Iterator>
 struct iterator_traits
 {
@@ -249,7 +251,6 @@ struct iterator_traits<const T*>
             template <class T>
             map_iterator(const map_iterator<T>& other)
             {
-
                 *this = other;
             }
             map_iterator(const NodePtr &other, const NodePtr &NIL, const NodePtr &root)

@@ -6,7 +6,7 @@
 /*   By: aaitbelh <aaitbelh@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 11:03:45 by aaitbelh          #+#    #+#             */
-/*   Updated: 2023/03/03 01:44:41 by aaitbelh         ###   ########.fr       */
+/*   Updated: 2023/03/04 10:50:30 by aaitbelh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,6 +383,21 @@ class RedBlack_tree
             new_Node->right = NIL;
             new_Node->parent = NIL;
             return new_Node;
+        }
+        void swap(RedBlack_tree& other)
+        {
+            Node<T> * tmpNIL = other.NIL;
+            Node<T> * tmpROOT = other.root;
+            size_t tmp_size = other.size();
+            Compare tmpCompare = other.comp;
+            other.NIL = NIL;
+            other.root = root;
+            other.__size = __size;
+            this->NIL = tmpNIL;
+            this->root = tmpROOT;
+            this->__size = tmp_size;
+            this->comp = tmpCompare;
+            
         }
         ~RedBlack_tree()
         {
