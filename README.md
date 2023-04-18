@@ -1,10 +1,12 @@
-The ft_containers project is an important project in the 42 school curriculum that teaches students how to implement common data structures used in programming, such as linked lists, vectors, and maps.
+The ft_containers project is an important project in the 42 school curriculum that teaches students how to implement common data structures 
+used in programming, such as linked lists, vectors, and maps.
 
 By completing the project, students will learn how to:
 
     Implement common data structures: The project requires students to implement various data structures,
     including linked lists, vectors, and maps.
-    This provides students with an understanding of how these structures work and how they can be used in programming.
+    This provides students with an understanding of how these structures work and how they can be used 
+    in programming.
 
     Understand how data structures are used in programming: Data structures are an essential part of programming, 
     and the ft_containers project provides students with an understanding of how they are used in programming,
