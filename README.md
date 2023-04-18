@@ -14,6 +14,8 @@ By completing the project, students will learn how to:
     due to the complexity of the data structures involved, which requires students 
     to develop strong debugging skills.
 
-    Write efficient and optimized code: The project requires students to write efficient and optimized code, which helps them develop their programming skills and learn how to write better code.
+    Write efficient and optimized code: The project requires students to write 
+    efficient and optimized code, which helps them develop their programming 
+    skills and learn how to write better code.
 
 Completing the ft_containers project is a significant achievement for students in the 42 curriculum, as it demonstrates their ability to implement complex data structures and write efficient code. By completing the project successfully, students will gain the skills and knowledge necessary to work on more advanced programming projects and tackle more complex programming challenges in the future.
